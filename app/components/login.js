@@ -60,7 +60,7 @@ export default class Login extends React.Component {
 	
 	login = () => {
 
-		fetch('https://cascade-app.herokuapp.com/users', {
+		fetch('https://cascade-app-server.herokuapp.com/users', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
