@@ -29,7 +29,7 @@ export default class Login extends React.Component {
 
 			<View style={styles.container}>
 
-				<Text style={styles.header}> LOGIN </Text>
+				<Text style={styles.header}> Cascade Psych Services </Text>
 				<TextInput 
 				style={styles.textInput} 
 				placeholder='Username'
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: '#2896d3',
+		backgroundColor: '#191919',
 		paddingLeft: 40,
 		paddingRight: 40,
 	},
