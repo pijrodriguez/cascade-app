@@ -13,7 +13,7 @@ export default class Profile extends React.Component {
 	_reloadState = async () => {
 			var value = await AsyncStorage.getItem('user');
 			if (value == null) {
-				this.props.navigation.navigate('Home');
+				this.props.navigation.navigate('Page2');
 			} else {
 				this.setState({status: "Error: Logout Failed"});
 			}
@@ -31,6 +31,8 @@ export default class Profile extends React.Component {
 					<Text>Log out</Text>
 				</TouchableOpacity>
 				<Text style={styles.text}> {this.state.status}</Text>
+				
+				
 			</View>
 		</View>
     );
