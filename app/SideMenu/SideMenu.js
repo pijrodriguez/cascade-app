@@ -1,10 +1,8 @@
-
-
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import styles from './SideMenu.style';
 import {NavigationActions} from 'react-navigation';
-import {ScrollView, Text, View, Icon, Image, ImageBackground} from 'react-native';
+import {ScrollView, Text, View, Icon, Image, ImageBackground, AsyncStorage} from 'react-native';
 
 
 class SideMenu extends Component {
@@ -13,6 +11,15 @@ class SideMenu extends Component {
       routeName: route
     });
     this.props.navigation.dispatch(navigateAction);
+  }
+
+	_reloadState = async () => {
+    var value = await AsyncStorage.getItem('user');
+    if (value == null) {
+      this.props.navigation.navigate('Login');
+    } else {
+      this.setState({status: "Error: Logout Failed"});
+    }
   }
 
   render () {
@@ -29,7 +36,7 @@ class SideMenu extends Component {
         
 		
             <View style={styles.navSectionStyle}>
-              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Page1')}>
+              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Home')}>
               <Image source={require('./profile.png')}
        style={{width: 40, height: 40}} /> PROFILE
               </Text>
@@ -38,11 +45,11 @@ class SideMenu extends Component {
           <View>
             
             <View style={styles.navSectionStyle}>
-              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Page3')}>
+              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Settings')}>
                <Image source={require('./cog.png')}
        style={{width: 40, height: 40}} /> SETTINGS
               </Text>
-              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Page2')}>
+              <Text style={styles.navItemStyle} onPress={this.logout}>
                 <Image source={require('./out.png')}
        style={{width: 40, height: 40}} /> LOG OUT
               </Text>
@@ -53,6 +60,11 @@ class SideMenu extends Component {
       </View>
     );
   }
+
+  logout = () => {
+    AsyncStorage.removeItem('user');
+    this._reloadState().done();
+    }
 }
 
 SideMenu.propTypes = {

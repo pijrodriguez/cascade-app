@@ -38,7 +38,7 @@ export default class Login extends React.Component {
   _loadInitialState = async () => {
   		var value = await AsyncStorage.getItem('user');
   		if (value !== null) {
-  			this.props.navigation.navigate('Profile');
+  			this.props.navigation.navigate('Home');
   		}
   }
   
@@ -80,7 +80,7 @@ export default class Login extends React.Component {
 
 			
 					
-					<TextInput 
+				<TextInput 
 				style={styles.textInput} 
 				placeholder='Enter current password'
 				onChangeText={ (password) => this.setState({password}) }
@@ -126,7 +126,7 @@ changePassword = () => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				username: this.state.username,
+				email: this.state.email,
 				password: this.state.password,
 			}),
 		})
@@ -136,7 +136,7 @@ changePassword = () => {
 
 			if (res.success == true) {
 				AsyncStorage.setItem('user', res.user);
-				this.props.navigation.navigate('Profile');
+				this.props.navigation.navigate('Home');
 			}
 
 			else {

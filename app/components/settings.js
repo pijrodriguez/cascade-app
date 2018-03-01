@@ -11,7 +11,7 @@ export default class Login extends React.Component {
   constructor(props) {
   		super(props);
   		this.state = {
-  			username: '',
+  			email: '',
   			password: '',
 			notifications: true,
 			customtheme: 'false',
@@ -25,26 +25,13 @@ export default class Login extends React.Component {
 			if (value == null) {
 				this.props.navigation.navigate('Home');
 				
-				console.log(this.state.username);
+				console.log(this.state.email);
 			} else {
 				this.setState({status: "Error: Logout Failed"});
 			}
 	}
-
-  componentDidMount() {
-  		this._loadInitialState().done();
-  }
-	
-
-  _loadInitialState = async () => {
-  		var value = await AsyncStorage.getItem('user');
-  		if (value !== null) {
-  			this.props.navigation.navigate('Profile');
-  		}
-  }
   
-  static defaultProps = {
-      
+  static defaultProps = {   
         value: 1
     }
   
@@ -82,7 +69,7 @@ export default class Login extends React.Component {
 		
 				<TouchableOpacity
 				style={styles.textInput}
-				onPress={() => this.props.navigation.navigate('Page4')}>
+				onPress={() => this.props.navigation.navigate('Change')}>
 					<Text>Change password</Text>
 				</TouchableOpacity>
 			
@@ -93,11 +80,11 @@ export default class Login extends React.Component {
 				onValueChange={(value) => {this.setState({
 					show: value
 				});
-				console.log(this.state.username);
+				console.log(this.state.email);
 this.notification && this.notification.show({
             title: 'Notifications',
-            message: 'change'})}
-}
+			message: 'change'})}
+		}
 				activeText={'On'}
 				inActiveText={'Off'}
             	/>
@@ -110,7 +97,7 @@ this.notification && this.notification.show({
 					<Text>Save changes</Text>
 				</TouchableOpacity>
 				
-</View>
+		</View>
 			
 		 </ScrollView>
     	</KeyboardAvoidingView>
@@ -126,7 +113,7 @@ changePassword = () => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				username: this.state.username,
+				email: this.state.email,
 				password: this.state.password,
 			}),
 		})
@@ -136,7 +123,7 @@ changePassword = () => {
 
 			if (res.success == true) {
 				AsyncStorage.setItem('user', res.user);
-				this.props.navigation.navigate('Profile');
+				this.props.navigation.navigate('Home');
 			}
 
 			else {
