@@ -1,8 +1,10 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {Component} from 'react';
+import Router from './routes';
+import {AppRegistry} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Login from './app/components/login';
 import Profile from './app/components/profile';
+
 
 const Application = StackNavigator({
     Home: { screen: Login },
@@ -14,11 +16,13 @@ const Application = StackNavigator({
 
 });
 
-export default class App extends React.Component {
-  render() {
+export default class CustomDrawer extends Component {
+  render () {
     return (
-        <Application/>
+      <Router/>
     );
   }
 }
+
+AppRegistry.registerComponent('CustomDrawer', () => CustomDrawer);
 

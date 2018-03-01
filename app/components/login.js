@@ -1,8 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, AsyncStorage, } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, KeyboardAvoidingView, TouchableOpacity, AsyncStorage } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 export default class Login extends React.Component {
+	
+
   
   constructor(props) {
   		super(props);
@@ -15,6 +19,7 @@ export default class Login extends React.Component {
   componentDidMount() {
   		this._loadInitialState().done();
   }
+	
 
   _loadInitialState = async () => {
   		var value = await AsyncStorage.getItem('user');
@@ -24,12 +29,26 @@ export default class Login extends React.Component {
   }
 
   render() {
+	  
+	  const {navigate} = this.props.navigation;
+	  
     return (
     	<KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
-
+			
+		
+					
+		
 			<View style={styles.container}>
+		
+		
+	
+			  
+		
+		<TouchableOpacity style={styles.header2} onPress={() => this.props.navigation.navigate('Page3')}>
+					<Icon name="info" size={20} color="#3271E5" />
+		</TouchableOpacity>
 
-				<Text style={styles.header}> Cascade Psych Services </Text>
+				<Text style={styles.textInput}> Cascade Psych Services </Text>
 				<TextInput 
 				style={styles.textInput} 
 				placeholder='Username'
@@ -50,6 +69,9 @@ export default class Login extends React.Component {
 				onPress={this.login}>
 					<Text>Log in</Text>
 				</TouchableOpacity>
+				
+				
+		
 
 
 			</View>
@@ -57,6 +79,7 @@ export default class Login extends React.Component {
     	</KeyboardAvoidingView>
     );
   }
+  
 	
 	login = () => {
 
@@ -77,7 +100,7 @@ export default class Login extends React.Component {
 
 			if (res.success == true) {
 				AsyncStorage.setItem('user', res.user);
-				this.props.navigation.navigate('Profile');
+				this.props.navigation.navigate('Page1');
 			}
 
 			else {
@@ -100,6 +123,15 @@ const styles = StyleSheet.create({
 		backgroundColor: '#191919',
 		paddingLeft: 40,
 		paddingRight: 40,
+	},
+	header2: {
+		flex: 0.2,
+		alignItems: 'center',
+		justifyContent: 'flex-end',
+		backgroundColor: '#191919',
+		paddingLeft: 5,
+		flexDirection: 'row',
+		
 	},
 	header: {
 		fontSize: 24,
