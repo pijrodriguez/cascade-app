@@ -1,17 +1,19 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button, KeyboardAvoidingView, TouchableOpacity, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, AsyncStorage, Dimensions, Image } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import { FormInput, Button, Input } from 'react-native-elements';
+import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+const SCREEN_WIDTH = Dimensions.get('window').width
+const SCREEN_HEIGHT = Dimensions.get('window').height
 
 export default class Login extends React.Component {
 	
-
-  
   constructor(props) {
   		super(props);
   		this.state = {
-  			username: '',
+  			email: '',
   			password: '',
   		}
   }
@@ -20,59 +22,73 @@ export default class Login extends React.Component {
   		this._loadInitialState().done();
   }
 	
-
   _loadInitialState = async () => {
   		var value = await AsyncStorage.getItem('user');
   		if (value !== null) {
-  			this.props.navigation.navigate('Profile');
+  			this.props.navigation.navigate('Home');
   		}
   }
 
   render() {
 	  
-	  const {navigate} = this.props.navigation;
+	const {navigate} = this.props.navigation;
 	  
     return (
     	<KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
-			
-		
-					
-		
+
 			<View style={styles.container}>
-		
-		
-	
-			  
-		
-		<TouchableOpacity style={styles.header2} onPress={() => this.props.navigation.navigate('Page3')}>
-					<Icon name="info" size={20} color="#3271E5" />
-		</TouchableOpacity>
 
-				<Text style={styles.textInput}> Cascade Psych Services </Text>
-				<TextInput 
-				style={styles.textInput} 
-				placeholder='Username'
-				onChangeText={ (username) => this.setState({username}) }
-				underlineColorAndroid='transparent'
+				<Image
+				source={require('../../assets/images/Logo4.png')}
+				style={{width:200,
+				height:200}}
 				/>
+				<Text style={styles.header}> Cascade Psych Services </Text>
+				
+				<View style={styles.inputContainer}>
+				<SimpleIcon
+					name='user'
+					color='rgba(171, 189, 219, 1)'
+					size={25}
+					style={{marginLeft:15}}
+                />
 
-				<TextInput 
-				style={styles.textInput} 
+				<FormInput 
+				inputStyle={styles.inputStyle}
+				placeholder='E-mail'
+				onChangeText={ (email) => this.setState({email}) }
+				underlineColorAndroid='transparent'
+				placeholderTextColor="#7384B4"
+				icon={<SimpleIcon name='user' color="#7384B4" size={18} />}
+				/>
+				</View>
+
+				<View style={styles.inputContainer}>
+
+				<SimpleIcon
+					name='lock'
+					color='rgba(171, 189, 219, 1)'
+					size={25}
+					style={{marginLeft:15}}
+                />
+				<FormInput 
+				inputStyle={styles.inputStyle}
 				placeholder='Password'
 				onChangeText={ (password) => this.setState({password}) }
 				secureTextEntry={true}
 				underlineColorAndroid='transparent'
+				placeholderTextColor="#7384B4"
 				/>
+				</View>
 
-				<TouchableOpacity
-				style={styles.btn}
-				onPress={this.login}>
-					<Text>Log in</Text>
-				</TouchableOpacity>
-				
-				
-		
 
+				<Button
+				title ='LOG IN'
+				buttonStyle={styles.btn}
+				containerStyle={{marginVertical: 10}}
+				textStyle={{fontWeight: 'bold'}}
+				onPress={this.login}
+				/>
 
 			</View>
 
@@ -80,7 +96,6 @@ export default class Login extends React.Component {
     );
   }
   
-	
 	login = () => {
 
 		fetch('https://cascade-app-server.herokuapp.com/users', {
@@ -90,7 +105,7 @@ export default class Login extends React.Component {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				username: this.state.username,
+				email: this.state.email,
 				password: this.state.password,
 			}),
 		})
@@ -100,7 +115,7 @@ export default class Login extends React.Component {
 
 			if (res.success == true) {
 				AsyncStorage.setItem('user', res.user);
-				this.props.navigation.navigate('Page1');
+				this.props.navigation.navigate('Home');
 			}
 
 			else {
@@ -124,32 +139,33 @@ const styles = StyleSheet.create({
 		paddingLeft: 40,
 		paddingRight: 40,
 	},
-	header2: {
-		flex: 0.2,
-		alignItems: 'center',
-		justifyContent: 'flex-end',
-		backgroundColor: '#191919',
-		paddingLeft: 5,
-		flexDirection: 'row',
-		
-	},
 	header: {
 		fontSize: 24,
 		marginBottom: 60,
 		color: '#fff',
 		fontWeight: 'bold'
 	},
-	textInput: {
-		alignSelf: 'stretch',
-		padding: 16,
-		marginBottom: 20,
-		backgroundColor: '#fff'
-	},
 	btn: {
-		alignSelf: 'stretch',
-		backgroundColor: '#01c853',
-		padding: 20,
-		alignItems: 'center'
-	}
-
+		height: 50, 
+		width: 250, 
+		backgroundColor: '#00c6ff', 
+		borderWidth: 2, 
+		borderColor: 'white', 
+		borderRadius: 30,
+		marginVertical: 10
+	},
+	inputContainer: {
+		height: 45,
+		width: 350,
+		marginVertical: 10,
+		alignItems:'center',
+		flexDirection:'row'
+		
+	},
+	inputStyle: {
+		flex:1,
+		color: 'white',
+		fontSize: 16,
+		width:280
+	},
 })

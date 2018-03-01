@@ -1,22 +1,22 @@
 import Login from './app/components/login';
-import Profile from './app/components/profile';
-import settings from './app/components/settings';
-import change from './app/components/change';
+import Home from './app/components/home';
+import Settings from './app/components/settings';
+import Change from './app/components/change';
 import SideMenu from './app/SideMenu/SideMenu';
 import {DrawerNavigator} from 'react-navigation';
 
 export default DrawerNavigator({
-  Page1: {
-    screen: Profile
+  Home: {
+    screen: Home
   },
-  Page2: {
+  Login: {
     screen: Login
   },
-  Page3: {
-    screen: settings
+  Settings: {
+    screen: Settings
   },
-  Page4: {
-    screen: change
+  Change: {
+    screen: Change
   }
 }, {
   contentComponent: SideMenu,
