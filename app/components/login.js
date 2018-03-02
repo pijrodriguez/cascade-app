@@ -41,10 +41,9 @@ export default class Login extends React.Component {
 
 				<Image
 				source={require('../../assets/images/Logo4.png')}
-				style={{width:200,
-				height:200}}
+				style={{width:300,
+				height:300}}
 				/>
-				<Text style={styles.header}> Cascade Psych Services </Text>
 				
 				<View style={styles.inputContainer}>
 				<SimpleIcon
@@ -141,12 +140,6 @@ const styles = StyleSheet.create({
 		paddingLeft: 40,
 		paddingRight: 40,
 	},
-	header: {
-		fontSize: 24,
-		marginBottom: 60,
-		color: '#fff',
-		fontWeight: 'bold'
-	},
 	btn: {
 		height: 50, 
 		width: 250, 
@@ -154,7 +147,7 @@ const styles = StyleSheet.create({
 		borderWidth: 2, 
 		borderColor: 'white', 
 		borderRadius: 30,
-		marginVertical: 10
+		marginVertical: 150
 	},
 	inputContainer: {
 		height: 45,
