@@ -82,9 +82,10 @@ export default class Login extends React.Component {
 					show: value
 				});
 				console.log(this.state.email);
-this.notification && this.notification.show({
+            this.notification && this.notification.show({
             title: 'Notifications',
-			message: 'updated' })}
+			      message: 'updated' })}
+
 		}
 				activeText={'On'}
 				inActiveText={'Off'}

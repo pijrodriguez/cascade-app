@@ -12,9 +12,9 @@ export default DrawerNavigator({
   },
   Login: {
     screen: Login,
-	navigationOptions: ({navigation}) => ({
-      drawerLockMode: 'locked-closed'
-    })
+    navigationOptions: ({navigation}) => ({
+        drawerLockMode: 'locked-closed'
+      })
   },
   Settings: {
     screen: Settings

@@ -40,6 +40,15 @@ class SideMenu extends Component {
     }
   }
 
+	_reloadState = async () => {
+    var value = await AsyncStorage.getItem('user');
+    if (value == null) {
+      this.props.navigation.navigate('Login');
+    } else {
+      this.setState({status: "Error: Logout Failed"});
+    }
+  }
+
   render () {
     return (
       <View style={styles.container}>
