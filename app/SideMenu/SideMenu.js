@@ -12,6 +12,33 @@ class SideMenu extends Component {
     });
     this.props.navigation.dispatch(navigateAction);
   }
+  
+  constructor(props) {
+  		super(props);
+  		this.state = {
+  			user: 'd',
+  			
+  		}
+  }
+  
+
+ 
+  _loadInitialState = async () => {
+	
+  		var value = await AsyncStorage.getItem('user');
+      if (value !== null){
+        this.setState({user: value});
+}
+  }
+
+	_reloadState = async () => {
+    var value = await AsyncStorage.getItem('user');
+    if (value == null) {
+      this.props.navigation.navigate('Login');
+    } else {
+      this.setState({status: "Error: Logout Failed"});
+    }
+  }
 
 	_reloadState = async () => {
     var value = await AsyncStorage.getItem('user');
@@ -29,6 +56,10 @@ class SideMenu extends Component {
 		<ImageBackground source={require('./user.png')} style={{width: 200, height: 150}}>  
 		<Image source={require('./contact.png')}
        style={{width: 100, height: 100}} />
+	   
+	   <Text style={styles.navItemStyle}> Welcome {this.state.user} </Text>
+	
+	   
 	   </ImageBackground>
         </View>
         <ScrollView>

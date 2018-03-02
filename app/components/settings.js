@@ -16,6 +16,7 @@ export default class Login extends React.Component {
 			notifications: true,
 			customtheme: 'false',
 			show: true,
+		
 			value: this.props.value,
   		}
   }
@@ -52,9 +53,9 @@ export default class Login extends React.Component {
     return (
     	<KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
 		
-		<ScrollView contentContainerStyle={styles.contentContainer}>
+		<ScrollView contentContainerStyle={styles.container}>
 		
-		<Notification ref={(ref) => { this.notification = ref; }} />
+		
  		
 		<View style={styles.container}>
 				
@@ -81,9 +82,10 @@ export default class Login extends React.Component {
 					show: value
 				});
 				console.log(this.state.email);
-this.notification && this.notification.show({
+            this.notification && this.notification.show({
             title: 'Notifications',
-			message: 'change'})}
+			      message: 'updated' })}
+
 		}
 				activeText={'On'}
 				inActiveText={'Off'}
@@ -100,6 +102,7 @@ this.notification && this.notification.show({
 		</View>
 			
 		 </ScrollView>
+					<Notification ref={(ref) => { this.notification = ref; }} />
     	</KeyboardAvoidingView>
     );
   }
@@ -141,10 +144,10 @@ const styles = StyleSheet.create({
 		flex:1,
 	},
 	container: {
-		flex: 1,
+		flex: 2,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: 'transparent',
+		backgroundColor: '#191919',
 		paddingLeft: 40,
 		paddingRight: 40,
 	},
@@ -158,8 +161,9 @@ const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 		padding: 20,
 		marginBottom: 5,
-		backgroundColor: '#fff',
+		backgroundColor: '#7AC6F6',
 		flexDirection: 'row',
+		
 	},
 	btn: {
 		alignSelf: 'stretch',

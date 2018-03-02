@@ -1,3 +1,4 @@
+import React, {Component} from 'react';
 import Login from './app/components/login';
 import Home from './app/components/home';
 import Settings from './app/components/settings';
@@ -10,7 +11,10 @@ export default DrawerNavigator({
     screen: Home
   },
   Login: {
-    screen: Login
+    screen: Login,
+    navigationOptions: ({navigation}) => ({
+        drawerLockMode: 'locked-closed'
+      })
   },
   Settings: {
     screen: Settings

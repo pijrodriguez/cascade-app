@@ -17,6 +17,7 @@ export default class Login extends React.Component {
   			password: '',
   		}
   }
+	
 
   componentDidMount() {
   		this._loadInitialState().done();
@@ -126,6 +127,7 @@ export default class Login extends React.Component {
 		.done();
 	}
 }
+
 
 const styles = StyleSheet.create({
 	wrapper: {
