@@ -1,8 +1,8 @@
 {
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 18796,
-  "expoServerNgrokUrl": "https://w4-qkh.pijrodriguez.cascade-app-client.exp.direct",
-  "packagerNgrokUrl": "https://packager.w4-qkh.pijrodriguez.cascade-app-client.exp.direct",
-  "ngrokPid": 6840
+  "packagerPid": 5084,
+  "expoServerNgrokUrl": "https://tg-dfw.pijrodriguez.cascade-app-client.exp.direct",
+  "packagerNgrokUrl": "https://packager.tg-dfw.pijrodriguez.cascade-app-client.exp.direct",
+  "ngrokPid": 15020
 }
