@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, TouchableHighlight, Alert, AsyncStorage, ListView, ScrollView, list, Switch } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Notification from 'react-native-in-app-notification';
 
@@ -53,6 +54,12 @@ export default class Login extends React.Component {
     return (
     	<KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
 		
+		<Header
+			leftComponent={{ icon: 'menu', color: '#fff' }}
+			centerComponent={{ text: 'SETTINGS', style: { color: '#fff', fontSize: 15, fontWeight: 'bold' } }}
+			outerContainerStyles={{backgroundColor:'black'}}
+      	/>
+
 		<ScrollView contentContainerStyle={styles.container}>
 		
 		
