@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage } from 'react-native';
-
+import { Header } from 'react-native-elements';
 
 export default class Profile extends React.Component {
 
@@ -10,39 +10,20 @@ export default class Profile extends React.Component {
 		}
 	}
 
-	_reloadState = async () => {
-			var value = await AsyncStorage.getItem('user');
-			if (value == null) {
-				this.props.navigation.navigate('Login');
-			} else {
-				this.setState({status: "Error: Logout Failed"});
-			}
-	}
-
   render() {
     return (
 		<View style={styles.wrapper}>
+			<Header
+				leftComponent={{ icon: 'menu', color: '#fff' }}
+				centerComponent={{ text: 'HOME', style: { color: '#fff', fontSize: 15, fontWeight: 'bold' } }}
+				outerContainerStyles={{backgroundColor:'black'}}
+      />
 			<View style={styles.container}>
-				<Text style={styles.text}> Welcome to the app! </Text>
-				
-				<TouchableOpacity
-				style={styles.btn}
-				onPress={this.logout}>
-					<Text>Log out</Text>
-				</TouchableOpacity>
-				<Text style={styles.text}> {this.state.status}</Text>
-				
-				
+				<Text style={styles.text}> Welcome to the app! </Text>			
 			</View>
 		</View>
     );
   }
-
-  logout = () => {
-	AsyncStorage.removeItem('user');
-	this._reloadState().done();
-  }
-	
 }
 
 const styles = StyleSheet.create({

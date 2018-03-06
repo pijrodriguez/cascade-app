@@ -4,10 +4,16 @@ export default {
     flex: 1
   },
   navItemStyle: {
-    padding: 10
+    padding: 20,
+    fontSize: 15
   },
   navSectionStyle: {
     backgroundColor: 'lightgrey'
+  },
+  optionContainer:{
+    flexDirection: 'row',
+    marginVertical: 5,
+    marginHorizontal:5
   },
   sectionHeadingStyle: {
     paddingVertical: 10,

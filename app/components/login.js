@@ -18,7 +18,7 @@ export default class Login extends React.Component {
   		}
   }
 	
-
+  
   componentDidMount() {
   		this._loadInitialState().done();
   }
@@ -40,7 +40,7 @@ export default class Login extends React.Component {
 			<View style={styles.container}>
 
 				<Image
-				source={require('../../assets/images/Logo4.png')}
+				source={require('../../assets/images/Logo.png')}
 				style={{width:300,
 				height:300}}
 				/>
@@ -84,8 +84,7 @@ export default class Login extends React.Component {
 
 				<Button
 				title ='LOG IN'
-				buttonStyle={styles.btn}
-				containerStyle={{marginVertical: 10}}
+				buttonStyle={styles.loginButton}
 				textStyle={{fontWeight: 'bold'}}
 				onPress={this.login}
 				/>
@@ -97,6 +96,7 @@ export default class Login extends React.Component {
   }
   
 	login = () => {
+		console.log('login');
 
 		fetch('https://cascade-app-server.herokuapp.com/users', {
 			method: 'POST',
@@ -114,7 +114,7 @@ export default class Login extends React.Component {
 		.then((res => {
 
 			if (res.success == true) {
-				AsyncStorage.setItem('user', res.user);
+				AsyncStorage.multiSet([['user', res.user], ['user_id', JSON.stringify(res.user_id)]]);
 				this.props.navigation.navigate('Home');
 			}
 
@@ -140,14 +140,14 @@ const styles = StyleSheet.create({
 		paddingLeft: 40,
 		paddingRight: 40,
 	},
-	btn: {
+	loginButton: {
 		height: 50, 
 		width: 250, 
 		backgroundColor: '#00c6ff', 
 		borderWidth: 2, 
 		borderColor: 'white', 
 		borderRadius: 30,
-		marginVertical: 150
+		marginVertical: 30
 	},
 	inputContainer: {
 		height: 45,
