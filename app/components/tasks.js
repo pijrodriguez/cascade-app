@@ -73,7 +73,7 @@ export default class Tasks extends React.Component {
 
 		//check if the user has tasks
 		if( this.state.tasks != null ){
-			return this.state.tasks.map( task => <TaskComponent task={task} /> );
+		return this.state.tasks.map((task, index) => <TaskComponent task={task} key={index} />);
 			}
 		}
 

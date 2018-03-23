@@ -21,8 +21,6 @@ export default class Login extends React.Component {
 			email_valid: true,
 			email_modal: false,
 			user_not_found: false
-
-
   		}
   }
 
