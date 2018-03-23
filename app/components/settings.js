@@ -55,7 +55,7 @@ export default class Login extends React.Component {
     	<KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
 		
 		<Header
-			leftComponent={{ icon: 'menu', color: '#fff' }}
+			leftComponent={{ icon: 'menu', color: '#fff', onPress: () => this.props.navigation.navigate('DrawerOpen')}}
 			centerComponent={{ text: 'SETTINGS', style: { color: '#fff', fontSize: 15, fontWeight: 'bold' } }}
 			outerContainerStyles={{backgroundColor:'black'}}
       	/>

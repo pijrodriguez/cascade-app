@@ -2,14 +2,16 @@
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "rnpm": {
-  "assets": [
-    "./assets/fonts/"
-  ]
+    "assets": [
+      "./assets/fonts/"
+    ]
   },
   "dependencies": {
     "expo": "^25.0.0",
+    "moment": "^2.21.0",
     "react": "16.2.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
+    "react-native-camera-roll-picker": "^1.2.3",
     "react-native-elements": "^0.19.0",
     "react-native-in-app-notification": "^2.2.0",
     "react-native-local-notification": "^3.0.3",

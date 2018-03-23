@@ -167,6 +167,7 @@ export default class Login extends React.Component {
 				buttonStyle={styles.loginButton}
 				textStyle={{fontWeight: 'bold'}}
 				onPress={this.login}
+				rounded={true}
 				/>
 
 			</View>
@@ -176,9 +177,7 @@ export default class Login extends React.Component {
   }
   
 	login = () => {
-		console.log('login');
-
-		
+		console.log('Logging in');
 		if(this.validateEmail(this.state.email) == true){
 			fetch('https://cascade-app-server.herokuapp.com/users', {
 				method: 'POST',
@@ -196,7 +195,12 @@ export default class Login extends React.Component {
 			.then((res => {
 	
 				if (res.success == true) {
-					AsyncStorage.multiSet([['user', res.user], ['user_id', JSON.stringify(res.user_id)]]);
+					AsyncStorage.multiSet([
+					['user', res.user], 
+					['user_id', JSON.stringify(res.user_id)],
+					['first_name', res.first_name],
+					['last_name', res.last_name]
+					]);
 					this.props.navigation.navigate('Home');
 				}
 	
@@ -231,8 +235,7 @@ const styles = StyleSheet.create({
 		width: 250, 
 		backgroundColor: '#00c6ff', 
 		borderWidth: 2, 
-		borderColor: 'white', 
-		borderRadius: 30,
+		borderColor: 'white',
 		marginVertical: 30
 	},
 	inputContainer: {
