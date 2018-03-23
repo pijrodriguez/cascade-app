@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import styles from './SideMenu.style';
 import {NavigationActions} from 'react-navigation';
-import {ScrollView, Text, View, Icon, Image, ImageBackground, AsyncStorage} from 'react-native';
+import {ScrollView, Text, View, Icon, Image, ImageBackground, AsyncStorage, TouchableHighlight} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -18,17 +18,10 @@ class SideMenu extends Component {
   constructor(props) {
   		super(props);
   		this.state = {
-  			user: 'Name',
-  			
+        user: 'Name',	
+        contact: './contact.png',
+        test3: '',
   		}
-  }
-  
-  _loadInitialState = async () => {
-	
-  		var value = await AsyncStorage.getItem('user');
-      if (value !== null){
-        this.setState({user: value});
-}
   }
 
 	_reloadState = async () => {
@@ -40,14 +33,37 @@ class SideMenu extends Component {
     }
   }
 
+  change = async () => {
+	  var value = await AsyncStorage.getItem('profile');
+	  console.log(value);
+	  if (value == null){
+		  this.props.navigation.navigate('Picture');
+	  }
+	  else {
+      this.setState({contact: value});
+      console.log(this.state.contact);
+      this.props.navigation.navigate('Picture');
+	  };
+	}
+	
+	update = () => {
+	
+	console.log('test3       ' + this.state.contact);
+  AsyncStorage.removeItem('profile');
+	this.props.navigation.navigate('Picture');
+  }
+
+
 
   render () {
     return (
     <View style={styles.container}>
 		<View style={styles.topContainer}>
 		<ImageBackground source={require('./user.png')} style={{width: 200, height: 150}}>  
-		<Image source={require('./contact.png')}
+		<TouchableHighlight onPress={this.change}>
+		<Image source={{uri: this.state.contact}}
        style={{width: 100, height: 100}} />
+	  </TouchableHighlight>
 	   
 	   <Text style={styles.navItemStyle}> Welcome {this.state.user} </Text>
 	
@@ -110,7 +126,7 @@ class SideMenu extends Component {
   }
 
   logout = () => {
-    AsyncStorage.removeItem('user');
+    AsyncStorage.multiRemove(['user','user_id']);
     this._reloadState().done();
     }
 }
