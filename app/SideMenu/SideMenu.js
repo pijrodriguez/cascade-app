@@ -3,6 +3,8 @@ import React, {Component} from 'react';
 import styles from './SideMenu.style';
 import {NavigationActions} from 'react-navigation';
 import {ScrollView, Text, View, Icon, Image, ImageBackground, AsyncStorage, TouchableHighlight} from 'react-native';
+import { Avatar, Divider } from 'react-native-elements';
+import { Font } from 'expo';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -21,8 +23,21 @@ class SideMenu extends Component {
         user: 'Name',	
         contact: './contact.png',
         test3: '',
+        fontLoaded: false,
   		}
   }
+  
+  async componentDidMount() {
+		//load the custom fonts using the Font package from expo
+		await Font.loadAsync({
+			'Montserrat-Regular': require('../../assets/fonts/Montserrat-Regular.ttf'),
+			'Montserrat-SemiBold': require('../../assets/fonts/Montserrat-SemiBold.ttf'),
+			'Montserrat-Bold': require('../../assets/fonts/Montserrat-Bold.ttf'),			
+    });
+    var first_name = await AsyncStorage.getItem('first_name');
+    var last_name = await AsyncStorage.getItem('last_name');
+    this.setState({fontLoaded:true, user:first_name + ' ' +last_name});
+	}
 
 	_reloadState = async () => {
     var value = await AsyncStorage.getItem('user');
@@ -57,19 +72,20 @@ class SideMenu extends Component {
 
   render () {
     return (
+      !this.state.fontLoaded ? <Text>Loading....</Text> :
     <View style={styles.container}>
 		<View style={styles.topContainer}>
-		<ImageBackground source={require('./user.png')} style={{width: 200, height: 150}}>  
-		<TouchableHighlight onPress={this.change}>
-		<Image source={{uri: this.state.contact}}
-       style={{width: 100, height: 100}} />
-	  </TouchableHighlight>
-	   
-	   <Text style={styles.navItemStyle}> Welcome {this.state.user} </Text>
-	
-	   
-	   </ImageBackground>
-        </View>
+    <Avatar
+      medium
+      rounded
+      source={{uri: "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-512.png"}}
+      onPress={this.change}
+      containerStyle={{marginLeft: 10}}
+    />
+	   <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold', fontSize: 20}]}> {this.state.user} </Text>
+     <Divider style={{ backgroundColor: 'white', marginBottom:10, width: 150 }}/>
+    </View>
+    
         <ScrollView>
           <View>
             <View style={styles.navSectionStyle}>
@@ -79,18 +95,18 @@ class SideMenu extends Component {
               color='#00c6ff'
               size={40}
               style={{}}/>
-              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Home')}>
+              <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold'}]} onPress={this.navigateToScreen('Home')}>
               HOME
               </Text>
             </View>
 
             <View style={styles.optionContainer} onPress={this.navigateToScreen('Tasks')}>
             <FontAwesome					
-              name='list-ol'
+              name='tasks'
               color='#00c6ff'
               size={40}
               style={{}}/>
-              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Tasks')}>
+              <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold'}]} onPress={this.navigateToScreen('Tasks')}>
               TASKS
               </Text>
             </View>
@@ -101,18 +117,18 @@ class SideMenu extends Component {
               color='#00c6ff'
               size={40}
               style={{}}/>
-            <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Settings')}>
+            <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold'}]} onPress={this.navigateToScreen('Settings')}>
                SETTINGS
             </Text>
             </View>
 
             <View style={styles.optionContainer} onPress={this.navigateToScreen('Settings')}>
-            <Entypo					
-              name='log-out'
+            <MaterialIcons					
+              name='exit-to-app'
               color='#00c6ff'
               size={40}
               style={{}}/>
-            <Text style={styles.navItemStyle} onPress={this.logout}>
+            <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold'}]} onPress={this.logout}>
             LOG OUT
             </Text>
             </View>
@@ -126,7 +142,8 @@ class SideMenu extends Component {
   }
 
   logout = () => {
-    AsyncStorage.multiRemove(['user','user_id']);
+    AsyncStorage.multiRemove(['user','user_id','first_name','last_name']);
+    this.setState({user:'Name'})
     this._reloadState().done();
     }
 }

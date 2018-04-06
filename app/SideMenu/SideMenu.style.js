@@ -1,14 +1,16 @@
 export default {
   container: {
     paddingTop: 20,
-    flex: 1
+    flex: 1,
+    backgroundColor: '#212121'
   },
   navItemStyle: {
     padding: 20,
-    fontSize: 15
+    fontSize: 15,
+    color: 'white'
   },
   navSectionStyle: {
-    backgroundColor: 'lightgrey'
+    backgroundColor: 'transparent'
   },
   optionContainer:{
     flexDirection: 'row',
@@ -25,6 +27,6 @@ export default {
   },
   topContainer: {
     padding: 0,
-    
+    alignItems: 'center'
   }
 };
