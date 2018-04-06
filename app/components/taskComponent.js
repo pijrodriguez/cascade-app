@@ -13,7 +13,9 @@ export default class TaskComponent extends React.Component {
 			fontLoaded: false,
 			taskStatus:'Finish',
 			taskColor: '#00c6ff',
-			confirm: false
+			icon: {},
+			confirm: false,
+			counted: false
 		}
 		this.finishGoal = this.finishGoal.bind(this);
 		this.checkGoalCompletion = this.checkGoalCompletion.bind(this);
@@ -27,17 +29,22 @@ export default class TaskComponent extends React.Component {
 			'Montserrat-Bold': require('../../assets/fonts/Montserrat-Bold.ttf'),			
 		});
 		this.setState({fontLoaded:true});
-
+		Moment.locale('en');
 		let{task} = this.props;
-		this.checkGoalCompletion(task.finished_date);
+		this.checkGoalCompletion(task.assigned_to, task.goal_id, task.missed,task.finished_date, task.due_date);
 	}
 
 	finishGoal(goal_id, assigned_to) {
 		console.log('FINISH GOAL');
 		console.log(goal_id);
 		console.log(assigned_to);
-
-		fetch('https://cascade-app-server.herokuapp.com/finished-task', {
+		
+		if(this.state.taskStatus == 'Missed') {
+			console.log('Missed!')
+		} else if(this.state.taskStatus == 'Done') {
+			console.log('Done')
+		} else {
+		fetch('http://cascade-app-server.herokuapp.com/finished-task', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -54,7 +61,7 @@ export default class TaskComponent extends React.Component {
 
 			if (res.success == true) {
 				console.log('CALLED');
-				this.setState({taskStatus:'Done', taskColor:'#00E676'});
+				this.setState({taskStatus:'Done', taskColor:'#00E676', icon: {name: 'check', type: 'font-awesome'}});
 			}
 
 			else {
@@ -62,15 +69,56 @@ export default class TaskComponent extends React.Component {
 			}
 
 		}))
-
+		}
 	}
 
-	checkGoalCompletion(goal) {
+	checkGoalCompletion(user,goal, missed, finished_date, due_date) {
 		console.log('GOAL COMPLETION:');
-		console.log(goal);
-		if(goal != null) {
-			this.setState({taskStatus:'Done', taskColor:'#00E676'})
+		
+		//get current date
+		var now = new Date();
+		now.setHours(now.getHours() - 7);
+
+		//parse the dates
+		var current_date = Date.parse(now);
+		var date_due = Date.parse(due_date);
+
+		if(finished_date != null) {
+			this.setState({taskStatus:'Done', taskColor:'#00E676', icon:{name: 'check', type: 'font-awesome'}})
 			console.log('CHANGE BUTTON');
+		} else if(current_date > date_due){
+			
+			if(!missed) {
+			
+				//fetch and count missed tasks
+				fetch('http://e11b89da.ngrok.io/missed-task', {
+					method: 'POST',
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						user_id: user,
+						goal_id: goal
+					}),
+				})
+		
+				.then((response) => response.json())
+				.then((res => {
+		
+					if (res.success == true) {
+						console.log('CALLED');
+						this.setState({taskStatus:'Missed', taskColor:'#EF5350',icon:{name: 'exclamation', type: 'font-awesome'}})
+					}
+		
+					else {
+						console.log(res.message);
+					}
+		
+				}))
+			} else {
+				this.setState({taskStatus:'Missed', taskColor:'#EF5350',icon:{name: 'exclamation', type: 'font-awesome'}})
+			}
 		}
 	}
 
@@ -80,7 +128,7 @@ export default class TaskComponent extends React.Component {
 		
 		//format the date
 		var due_date = task.due_date.substring(0,10);
-		var formatted_date = Moment(due_date).format('MMMM D, YYYY')
+		var formatted_date = Moment(due_date).format('dddd MMMM D, YYYY')
 
     return (
 		!this.state.fontLoaded ? <Text>Loading....</Text> :
@@ -91,7 +139,7 @@ export default class TaskComponent extends React.Component {
 			title ={this.state.taskStatus}
 			buttonStyle={[styles.doneButton,{backgroundColor:this.state.taskColor}]}
 			textStyle={{fontFamily:'Montserrat-Bold'}}
-			icon={{name: 'check', type: 'font-awesome'}}
+			icon={this.state.icon}
 			onPress={() => this.finishGoal(task.goal_id, task.assigned_to)}
 			/>
 		</Card>

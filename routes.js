@@ -4,7 +4,6 @@ import Home from './app/components/home';
 import Settings from './app/components/settings';
 import Change from './app/components/change';
 import Tasks from './app/components/tasks';
-import Picture from './app/components/Picture';
 import SideMenu from './app/SideMenu/SideMenu';
 import {DrawerNavigator} from 'react-navigation';
 
@@ -26,9 +25,6 @@ export default DrawerNavigator({
   },
   Tasks: {
     screen: Tasks
-  },
-  Picture: {
-    screen: Picture
   }
 }, {
   contentComponent: SideMenu,
