@@ -32,12 +32,10 @@ class SideMenu extends Component {
 		await Font.loadAsync({
 			'Montserrat-Regular': require('../../assets/fonts/Montserrat-Regular.ttf'),
 			'Montserrat-SemiBold': require('../../assets/fonts/Montserrat-SemiBold.ttf'),
-			'Montserrat-Bold': require('../../assets/fonts/Montserrat-Bold.ttf'),			
+      'Montserrat-Bold': require('../../assets/fonts/Montserrat-Bold.ttf'),			
     });
-    var first_name = await AsyncStorage.getItem('first_name');
-    var last_name = await AsyncStorage.getItem('last_name');
-    this.setState({fontLoaded:true, user:first_name + ' ' +last_name});
-	}
+    this.setState({fontLoaded:true});
+  }
 
 	_reloadState = async () => {
     var value = await AsyncStorage.getItem('user');
@@ -47,42 +45,16 @@ class SideMenu extends Component {
       this.setState({status: "Error: Logout Failed"});
     }
   }
-
-  change = async () => {
-	  var value = await AsyncStorage.getItem('profile');
-	  console.log(value);
-	  if (value == null){
-		  this.props.navigation.navigate('Picture');
-	  }
-	  else {
-      this.setState({contact: value});
-      console.log(this.state.contact);
-      this.props.navigation.navigate('Picture');
-	  };
-	}
 	
-	update = () => {
-	
-	console.log('test3       ' + this.state.contact);
-  AsyncStorage.removeItem('profile');
-	this.props.navigation.navigate('Picture');
-  }
-
-
-
   render () {
     return (
       !this.state.fontLoaded ? <Text>Loading....</Text> :
     <View style={styles.container}>
 		<View style={styles.topContainer}>
-    <Avatar
-      medium
-      rounded
-      source={{uri: "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-512.png"}}
-      onPress={this.change}
-      containerStyle={{marginLeft: 10}}
-    />
-	   <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold', fontSize: 20}]}> {this.state.user} </Text>
+    <Image
+				source={require('../../assets/images/sidemenu.png')}
+				style={{width: 120, height: 50}}
+				/>
      <Divider style={{ backgroundColor: 'white', marginBottom:10, width: 150 }}/>
     </View>
     

@@ -15,7 +15,7 @@ export default {
   optionContainer:{
     flexDirection: 'row',
     marginVertical: 5,
-    marginHorizontal:5
+    marginHorizontal: 15
   },
   sectionHeadingStyle: {
     paddingVertical: 10,
