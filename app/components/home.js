@@ -45,7 +45,7 @@ export default class Profile extends React.Component {
 		//get user_id from AsyncStorage and use it to fetch this user's tasks
 		var user_id = await AsyncStorage.getItem('user_id');
 		
-      fetch('https://cascade-app-server.herokuapp.com/tasks', {
+      fetch('https://cascade-app-server.herokuapp.com/count-tasks', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -60,7 +60,7 @@ export default class Profile extends React.Component {
 		.then((res => {
 
 			if (res.success == true) {
-				console.log('CALLED');
+				console.log('COUNT');
 				this.setState({tasksCount:Object.keys(res.tasks).length})
 			}
 

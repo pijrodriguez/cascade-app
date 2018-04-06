@@ -67,7 +67,6 @@ export default class Tasks extends React.Component {
 
 	
     showTasks() {
-		this.getTasks();
 		console.log('Show tasks');
 		console.log(this.state.tasks);
 
