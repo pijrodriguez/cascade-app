@@ -4,149 +4,151 @@ import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
-export default class Login extends React.Component {
+export default class Change extends React.Component {
 	
-  
-  constructor(props) {
+	constructor(props) {
   		super(props);
   		this.state = {
-  			username: '',
-  			password: '',
-			newpass: '',
-			confirmpass: '',
-			notifications: true,
-			customtheme: 'false',
-			show: true,
-			value: this.props.value,
-  		}
-  }
-	
-	_reloadState = async () => {
-			var value = await AsyncStorage.getItem('user');
-			if (value == null) {
-				this.props.navigation.navigate('Home');
-			} else {
-				this.setState({status: "Error: Logout Failed"});
-			}
+  			old_password: '',
+			password_valid: true,
+			new_password: '',
+			confirm_password: '',
+			current_password: '',
+			current_id: '',
+		}
 	}
 
-  componentDidMount() {
-  		this._loadInitialState().done();
-  }
-	
-
-  _loadInitialState = async () => {
-  		var value = await AsyncStorage.getItem('user');
-  		if (value !== null) {
-  			this.props.navigation.navigate('Home');
-  		}
-  }
-  
-  static defaultProps = {
-      
-        value: 1
+	//On page start run this function
+	componentDidMount() {
+        this.getProfile();
     }
-  
-  logout = () => {
-	AsyncStorage.removeItem('user');
-	this._reloadState().done();
-  }
-  
-  mutual = () => {
-	  if (this.state.newpass !== null) {
-		  if (this.state.newpass == this.state.confirmpass) {
-		
-			  
-		  this.changePassword();
-		  
-	  }
-  }
-  }
-  
-  chpassword = () => {
-	AsyncStorage.removeItem('user');
-	this._reloadState().done();
-  }
 
-  render() {
-	  
-	  const {navigate} = this.props.navigation;
-	  
-    return (
-    	<KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
-		<ScrollView contentContainerStyle={styles.contentContainer}>
- 
-		<View style={styles.container}>
+	//Use async to get the current account password and set it to a variable with a current state
+    async getProfile() {
+		var account_password = await AsyncStorage.getItem("password");
+		var account_id = await AsyncStorage.getItem("user_id");
+        this.setState({
+			current_password: account_password,
+			current_id: account_id
+        });
+    }
 
+	//Function to check if the old password entered matches the current one
+    old_passwords_match = () => {
+	    if (this.state.old_password !== null) {
+			if (this.state.old_password == this.state.current_password) {
+				console.log("Entered password matches current password");
+				//this.changePassword();
+				return(this.state.password_valid)
+			} else {
+				console.log("Entered password does not match current password");
+			}
+		}
+	}
+
+	//Function to check if the new password entered matches the current new one
+	new_passwords_match = () => {
+	    if (this.state.confirm_password !== null) {
+			if (this.state.new_password == this.state.confirm_password) {
+				console.log("Entered password matches new password");
+				//this.changePassword();
+				return(this.state.password_valid)
+			} else {
+				console.log("Entered password does not match new password");
+			}
+		}
+	}
+
+	//Function to change the password in async by calling the server and changing it in the db first
+	changePassword = () => {
+		if (this.old_passwords_match() == true) {
+			if (this.new_passwords_match() == true) {
 			
-					
+				fetch('https://cascade-app-server.herokuapp.com/password', {
+				//fetch('http://a8b21e86.ngrok.io/password', {
+					method: 'POST',
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						password: this.state.new_password,
+						user_id: this.state.current_id
+					}),
+				})
+
+				.then((response) => response.json())
+				.then((res => {
+
+					if (res.success == true) {
+						console.log('Password changed.');
+						AsyncStorage.setItem('password', res.password);
+						this.props.navigation.navigate('Home');
+					}
+
+				}))
+				.done();
+			} else {
+				console.log("Entered password does not match new password");
+			}
+		} else {
+			console.log("Entered password does not match current password");
+		} 
+	}
+
+	render() {
+
+		const {navigate} = this.props.navigation;
+	  
+		return (
+			<KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
+			<ScrollView contentContainerStyle={styles.contentContainer}>
+	
+			<View style={styles.container}>
+
 				<TextInput 
 				style={styles.textInput} 
 				placeholder='Enter current password'
-				onChangeText={ (password) => this.setState({password}) }
+				onChangeText={(old_password)=>this.setState({old_password})}
+				ref={ input => this.old_passwordInput = input}
+				onSubmitEditing={() => {
+                    this.setState({old_password_valid: this.old_passwords_match()});
+                    this.old_passwordInput.focus();
+                  }}
 				underlineColorAndroid='transparent'
 				/>
 
 				<TextInput 
 				style={styles.textInput} 
 				placeholder='Enter new password'
-				onChangeText={ (newpass) => this.setState({newpass}) }
-				secureTextEntry={true}
+				onChangeText={ (new_password) => this.setState({new_password}) }
 				underlineColorAndroid='transparent'
 				/>
 					
 				<TextInput 
 				style={styles.textInput} 
 				placeholder='Confirm new password'
-				onChangeText={ (confirmpass) => this.setState({confirmpass}) }
-				secureTextEntry={true}
+				onChangeText={ (confirm_password) => this.setState({confirm_password}) }
+				ref={ input => this.confirm_passwordInput = input}
+				onSubmitEditing={() => {
+                    this.setState({password_valid: this.new_passwords_match()});
+                    this.confirm_passwordInput.focus();
+                  }}
 				underlineColorAndroid='transparent'
 				/>
 				
-			
 				<TouchableOpacity
 				style={styles.textInput}
-				onPress={this.mutual}>
-					<Text>SAVE</Text>
+				onPress={this.changePassword}>
+				<Text>SAVE</Text>
 				</TouchableOpacity>
+					
+			</View>
 				
-</View>
-			
-		 </ScrollView>
-    	</KeyboardAvoidingView>
-    );
-  }
-
-changePassword = () => {
-
-		fetch('https://cascade-app-server.herokuapp.com/users', {
-			method: 'POST',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				email: this.state.email,
-				password: this.state.password,
-			}),
-		})
-
-		.then((response) => response.json())
-		.then((res => {
-
-			if (res.success == true) {
-				AsyncStorage.setItem('user', res.user);
-				this.props.navigation.navigate('Home');
-			}
-
-			else {
-				alert(res.message);
-			}
-
-		}))
-		.done();
-	}
-  
+			</ScrollView>
+			</KeyboardAvoidingView>
+		);
+	} 
 }
 
 const styles = StyleSheet.create({
@@ -186,6 +188,6 @@ const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 		padding: 16,
 		marginBottom: 20,
-  },
+    },
 
 })

@@ -38,12 +38,7 @@ export default class Login extends React.Component {
     }
   
   logout = () => {
-	AsyncStorage.removeItem('user');
-	this._reloadState().done();
-  }
-  
-  chpassword = () => {
-	AsyncStorage.removeItem('user');
+	AsyncStorage.multiRemove(['user','first_name','last_name','password','user_id']);
 	this._reloadState().done();
   }
 
