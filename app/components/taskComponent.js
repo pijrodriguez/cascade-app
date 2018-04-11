@@ -13,9 +13,8 @@ export default class TaskComponent extends React.Component {
 			fontLoaded: false,
 			taskStatus:'Finish',
 			taskColor: '#00c6ff',
-			icon: {},
-			confirm: false,
-			counted: false
+			icon: {}
+			
 		}
 		this.finishGoal = this.finishGoal.bind(this);
 		this.checkGoalCompletion = this.checkGoalCompletion.bind(this);
@@ -91,7 +90,7 @@ export default class TaskComponent extends React.Component {
 			if(!missed) {
 			
 				//fetch and count missed tasks
-				fetch('http://e11b89da.ngrok.io/missed-task', {
+				fetch('http://cascade-app-server.herokuapp.com/missed-task', {
 					method: 'POST',
 					headers: {
 						'Accept': 'application/json',
@@ -128,13 +127,13 @@ export default class TaskComponent extends React.Component {
 		
 		//format the date
 		var due_date = task.due_date.substring(0,10);
-		var formatted_date = Moment(due_date).format('dddd MMMM D, YYYY')
+		var formatted_date = Moment(due_date).format('ddd MMMM D')
 
     return (
 		!this.state.fontLoaded ? <Text>Loading....</Text> :
-		<Card title={task.title}>
+		<Card title={task.title} titleStyle={{fontFamily:'Montserrat-SemiBold'}}>
 			<Text style={{fontSize:15, fontFamily:'Montserrat-Regular'}}>{task.description}</Text>
-			<Text style={{fontSize:25, fontFamily:'Montserrat-SemiBold'}}>{formatted_date}</Text>
+			<Text style={{fontSize:20, fontFamily:'Montserrat-SemiBold'}}>{formatted_date}</Text>
 			<Button
 			title ={this.state.taskStatus}
 			buttonStyle={[styles.doneButton,{backgroundColor:this.state.taskColor}]}

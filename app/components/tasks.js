@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Dimensions, RefreshControl } from 'react-native';
 import { Font } from 'expo';
 import { Header, Divider } from 'react-native-elements';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -16,11 +16,21 @@ export default class Tasks extends React.Component {
 		this.state = {
 			tasks: null,
 			fontLoaded: false,
-			noTasks: true
+			noTasks: true,
+			refreshing: false
 			}
     }
-    
+	
+	_onRefresh() {
+		this.setState({refreshing: true});
+		this.getTasks().then(this.setState({refreshing:false}));
+	}
+
     getTasks = async () => {
+
+		//clear the tasks array
+		this.setState({tasks:null});
+
 		//get user_id from AsyncStorage and use it to fetch this user's tasks
 		var user_id = await AsyncStorage.getItem('user_id');
 		
@@ -81,12 +91,19 @@ export default class Tasks extends React.Component {
 		!this.state.fontLoaded ? <Text> Loading... </Text> :
 		<View style={styles.wrapper}>
             <Header
-			leftComponent={{ icon: 'menu', color: '#fff', onPress: () => this.props.navigation.navigate('DrawerOpen')}}
-            centerComponent={{ text: 'TASKS', style: { color: '#fff', fontSize: 15, fontWeight: 'bold' } }}
-            outerContainerStyles={{backgroundColor:'black'}}
+				leftComponent={{ icon: 'menu', color: '#fff', size: SCREEN_WIDTH/14, type:'entypo', onPress: () => this.props.navigation.navigate('DrawerOpen')}}
+				centerComponent={{ text: 'TASKS', style: { color: '#fff', fontSize: SCREEN_WIDTH/20, fontFamily:'Montserrat-Bold'} }}
+				outerContainerStyles={{backgroundColor:'black'}}
             />
             
-            <ScrollView>
+            <ScrollView
+				refreshControl={
+					<RefreshControl
+						refreshing={this.state.refreshing}
+						onRefresh={this._onRefresh.bind(this)}
+					/>
+				}
+			>
 				{this.state && this.state.noTasks ? 
 				this.state &&
 				<View style={[styles.noTasks, {height:SCREEN_HEIGHT/3, borderRadius:SCREEN_WIDTH/30}]}>

@@ -1,14 +1,16 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, TouchableHighlight, Alert, AsyncStorage, ListView, ScrollView, list, Switch } from 'react-native';
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, TouchableHighlight, Alert, AsyncStorage, ListView, ScrollView, list, Dimensions} from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import { Header } from 'react-native-elements';
+import { Header, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Notification from 'react-native-in-app-notification';
+import { Font } from 'expo';
 
+const SCREEN_WIDTH = Dimensions.get('window').width
+const SCREEN_HEIGHT = Dimensions.get('window').height
 
-export default class Login extends React.Component {
-	
-  
+export default class Settings extends React.Component {
+
   constructor(props) {
   		super(props);
   		this.state = {
@@ -17,10 +19,21 @@ export default class Login extends React.Component {
 			notifications: true,
 			customtheme: 'false',
 			show: true,
+			fontLoaded: false,
 		
 			value: this.props.value,
   		}
   }
+
+  async componentDidMount() {
+	//load the custom fonts using the Font package from expo
+	await Font.loadAsync({
+		'Montserrat-Regular': require('../../assets/fonts/Montserrat-Regular.ttf'),
+		'Montserrat-SemiBold': require('../../assets/fonts/Montserrat-SemiBold.ttf'),
+		'Montserrat-Bold': require('../../assets/fonts/Montserrat-Bold.ttf'),			
+	});
+	this.setState({fontLoaded:true});
+}
 	
 	_reloadState = async () => {
 			var value = await AsyncStorage.getItem('user');
@@ -38,80 +51,59 @@ export default class Login extends React.Component {
     }
   
   logout = () => {
-	AsyncStorage.multiRemove(['user','first_name','last_name','password','user_id']);
+    AsyncStorage.multiRemove(['user','user_id','first_name','last_name', 'password']);
 	this._reloadState().done();
   }
 
   render() {
 	  
 	  const {navigate} = this.props.navigation;
-	  
+	  const options = [
+		{
+			name: 'Change Password',
+			icon: 'key'
+		}, 
+		{
+			name: 'Log out',
+			icon: 'exit-to-app'
+		}
+	];
     return (
     	<KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
 		
 		<Header
-			leftComponent={{ icon: 'menu', color: '#fff', onPress: () => this.props.navigation.navigate('DrawerOpen')}}
-			centerComponent={{ text: 'SETTINGS', style: { color: '#fff', fontSize: 15, fontWeight: 'bold' } }}
+			leftComponent={{ icon: 'menu', color: '#fff', size: SCREEN_WIDTH/14, type:'entypo', onPress: () => this.props.navigation.navigate('DrawerOpen')}}
+			centerComponent={{ text: 'SETTINGS', style: { color: '#fff', fontSize: SCREEN_WIDTH/20, fontFamily:'Montserrat-Bold' } }}
 			outerContainerStyles={{backgroundColor:'black'}}
       	/>
 
 		<ScrollView contentContainerStyle={styles.container}>
-		
-		
  		
 		<View style={styles.container}>
 				
-				<Text style={styles.textInput}>Notifications {this.state.notifications}</Text>
-				<Text style={styles.textInput}>Custom theme {this.state.customtheme}</Text>
-			
-				<TouchableOpacity
-				style={styles.textInput}
-				onPress={this.logout}>
-					<Text>Log out</Text>
-				</TouchableOpacity>
-		
-				<TouchableOpacity
-				style={styles.textInput}
-				onPress={() => this.props.navigation.navigate('Change')}>
-					<Text>Change password</Text>
-				</TouchableOpacity>
-			
-				<View style={styles.textInput}>
-		<Text>Push Notifications</Text>
-		<Switch
-				value={this.state.show}
-				onValueChange={(value) => {this.setState({
-					show: value
-				});
-				console.log(this.state.email);
-            this.notification && this.notification.show({
-            title: 'Notifications',
-			      message: 'updated' })}
+			<ListItem
+				title={<Text style={{fontFamily:'Montserrat-Regular', fontSize:SCREEN_WIDTH/25}}>Change Password</Text>}
+				leftIcon={{name:'key', type:'entypo'}}
+				onPress={() => this.props.navigation.navigate('Change')}
+			/>
 
-		}
-				activeText={'On'}
-				inActiveText={'Off'}
-            	/>
-		</View>
-				
-				<TouchableOpacity
-				style={styles.textInput}
-				onPress={() => 
-			this.props.navigation.navigate('Home')}>
-					<Text>Save changes</Text>
-				</TouchableOpacity>
-				
+			<ListItem
+				title={<Text style={{fontFamily:'Montserrat-Regular', fontSize:SCREEN_WIDTH/25}}>Log out</Text>}
+				leftIcon={{name:'exit-to-app', type:'material-community-icons'}}
+				onPress={this.logout}
+			/>
+
 		</View>
 			
 		 </ScrollView>
-					<Notification ref={(ref) => { this.notification = ref; }} />
+			<Notification ref={(ref) => { this.notification = ref; }} />
     	</KeyboardAvoidingView>
     );
   }
 
 changePassword = () => {
 
-		fetch('https://cascade-app-server.herokuapp.com/users', {
+		fetch('http://cascade-app-server.herokuapp.com/users', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -146,12 +138,7 @@ const styles = StyleSheet.create({
 		flex:1,
 	},
 	container: {
-		flex: 2,
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: '#191919',
-		paddingLeft: 40,
-		paddingRight: 40,
+		backgroundColor: 'white'
 	},
 	header: {
 		fontSize: 24,

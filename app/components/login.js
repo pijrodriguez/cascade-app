@@ -20,7 +20,8 @@ export default class Login extends React.Component {
 			password: '',
 			email_valid: true,
 			email_modal: false,
-			user_not_found: false
+			user_not_found: false,
+			fontLoaded: false
   		}
   }
 
@@ -49,9 +50,11 @@ export default class Login extends React.Component {
 		
 		//load the custom fonts using the Font package from expo
 		await Font.loadAsync({
+			'Montserrat-Regular': require('../../assets/fonts/Montserrat-Regular.ttf'),
 			'Montserrat-SemiBold': require('../../assets/fonts/Montserrat-SemiBold.ttf'),
 			'Montserrat-Bold': require('../../assets/fonts/Montserrat-Bold.ttf'),
 		});
+		this.setState({fontLoaded:true})
   }
 	
   _loadInitialState = async () => {
@@ -67,6 +70,7 @@ export default class Login extends React.Component {
 	const { email, password, email_valid, email_modal, user_not_found } = this.state;
 	  
     return (
+		!this.state.fontLoaded ? <Text>Loading....</Text> :
     	<KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
 
 			<Modal 
@@ -97,7 +101,7 @@ export default class Login extends React.Component {
 					color='rgba(171, 189, 219, 1)'
 					size={100}
 				/>
-				<Text style={{fontSize:SCREEN_WIDTH/25, marginVertical:10, fontFamily:'Montserrat-Bold'}}>User not found</Text>
+				<Text style={{fontSize:SCREEN_WIDTH/25, marginVertical:10, fontFamily:'Montserrat-Bold'}}>Incorrect e-mail/password</Text>
 				<Button
 				title ='CLOSE'
 				buttonStyle={styles.modalButton}
