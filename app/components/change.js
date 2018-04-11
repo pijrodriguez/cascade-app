@@ -4,6 +4,7 @@ import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Font } from 'expo';
 import {FormLabel, FormInput, Header, Divider, Button} from 'react-native-elements';
+import Modal from 'react-native-modal';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Dimensions.get('window').height
@@ -22,6 +23,26 @@ export default class Change extends React.Component {
 			fontLoaded: false
 		}
 	}
+	
+	state = {
+    visibleModal: null,
+  };
+	
+	_renderButton = (text, onPress) => (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.button}>
+        <Text>{text}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  _renderModalContent = (text) => (
+    <View style={styles.modalContent}>
+      <Text>{text}</Text>
+      {this._renderButton('Close', () => this.setState({ visibleModal: null }))}
+    </View>
+  );
+
 
 	async componentDidMount() {
 
@@ -92,18 +113,21 @@ export default class Change extends React.Component {
 				.then((res => {
 
 					if (res.success == true) {
+						this.setState({ visibleModal: 4 })
 						console.log('Password changed.');
 						AsyncStorage.setItem('password', this.state.new_password);
-						this.props.navigation.navigate('Home');
+						
 					}
 
 				}))
 				.done();
 			} else {
 				console.log("Entered password does not match new password");
+				this.setState({ visibleModal: 2 })
 			}
 		} else {
 			console.log("Entered password does not match current password");
+			this.setState({ visibleModal: 2 })
 		} 
 	}
 
@@ -121,6 +145,28 @@ export default class Change extends React.Component {
 					outerContainerStyles={{backgroundColor:'black'}}
 				/>
 			<View style={styles.container}>
+				
+        <Modal
+          isVisible={this.state.visibleModal === 2}
+          animationIn={'slideInLeft'}
+          animationOut={'slideOutRight'}
+        >
+          {this._renderModalContent('Password does not match')}
+        </Modal>
+        
+        <Modal
+          isVisible={this.state.visibleModal === 4}
+          backdropColor={'red'}
+          backdropOpacity={1}
+          animationIn={'zoomInDown'}
+          animationOut={'zoomOutUp'}
+          animationInTiming={1000}
+          animationOutTiming={1000}
+          backdropTransitionInTiming={1000}
+          backdropTransitionOutTiming={1000}
+        >
+          {this._renderModalContent('Password changed')}
+        </Modal>
 
 				<View style={styles.inputContainers}>
 					<FormLabel style={{fontFamily:'Montserrat-Regular'}}>Current Password</FormLabel>
@@ -239,5 +285,26 @@ const styles = StyleSheet.create({
 		borderWidth: 2, 
 		borderColor: 'white',
 		marginVertical: 30
-	}
+	},
+  button: {
+    backgroundColor: 'lightblue',
+    padding: 12,
+    margin: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  bottomModal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
 })
