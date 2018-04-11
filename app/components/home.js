@@ -1,7 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { Header, Card, Divider, Avatar, Button} from 'react-native-elements';
 import { Font } from 'expo';
+
+const SCREEN_WIDTH = Dimensions.get('window').width
+const SCREEN_HEIGHT = Dimensions.get('window').height
 
 export default class Profile extends React.Component {
 
@@ -45,7 +48,7 @@ export default class Profile extends React.Component {
 		//get user_id from AsyncStorage and use it to fetch this user's tasks
 		var user_id = await AsyncStorage.getItem('user_id');
 		
-      fetch('http://cascade-app-server.herokuapp.com/count-tasks', {
+      fetch('http://614b441f.ngrok.io/count-tasks', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -77,8 +80,8 @@ export default class Profile extends React.Component {
 			!this.state.fontLoaded ? <Text>Loading....</Text> : 
 			<View style={styles.wrapper}>
 				<Header
-					leftComponent={{ icon: 'menu', color: '#fff', onPress: () => this.props.navigation.navigate('DrawerOpen')}}
-					centerComponent={{ text: 'HOME', style: { color: '#fff', fontSize: 15, fontWeight: 'bold' } }}
+					leftComponent={{ icon: 'menu', color: '#fff', size: SCREEN_WIDTH/14, type:'entypo', onPress: () => this.props.navigation.navigate('DrawerOpen')}}
+					centerComponent={{ text: 'HOME', style: { color: '#fff', fontSize: SCREEN_WIDTH/20, fontFamily:'Montserrat-Bold' } }}
 					outerContainerStyles={{backgroundColor:'black'}}
 				/>
 				<ScrollView>

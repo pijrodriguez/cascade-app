@@ -1,8 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, AsyncStorage, ListView, ScrollView, list, Switch } from 'react-native';
+import { StyleSheet, Dimensions, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, AsyncStorage, ListView, ScrollView, list, Switch } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Font } from 'expo';
+import {FormLabel, FormInput, Header, Divider, Button} from 'react-native-elements';
 
+const SCREEN_WIDTH = Dimensions.get('window').width
+const SCREEN_HEIGHT = Dimensions.get('window').height
 
 export default class Change extends React.Component {
 	
@@ -15,13 +19,21 @@ export default class Change extends React.Component {
 			confirm_password: '',
 			current_password: '',
 			current_id: '',
+			fontLoaded: false
 		}
 	}
 
-	//On page start run this function
-	componentDidMount() {
-        this.getProfile();
-    }
+	async componentDidMount() {
+
+		//load the custom fonts using the Font package from expo
+		await Font.loadAsync({
+			'Montserrat-Regular': require('../../assets/fonts/Montserrat-Regular.ttf'),
+			'Montserrat-SemiBold': require('../../assets/fonts/Montserrat-SemiBold.ttf'),
+			'Montserrat-Bold': require('../../assets/fonts/Montserrat-Bold.ttf'),			
+		});
+		this.setState({fontLoaded:true})
+		this.getProfile();
+  	}
 
 	//Use async to get the current account password and set it to a variable with a current state
     async getProfile() {
@@ -64,8 +76,7 @@ export default class Change extends React.Component {
 		if (this.old_passwords_match() == true) {
 			if (this.new_passwords_match() == true) {
 			
-				fetch('https://cascade-app-server.herokuapp.com/password', {
-				//fetch('http://a8b21e86.ngrok.io/password', {
+				fetch('http://cascade-app-server.herokuapp.com/password', {
 					method: 'POST',
 					headers: {
 						'Accept': 'application/json',
@@ -82,7 +93,7 @@ export default class Change extends React.Component {
 
 					if (res.success == true) {
 						console.log('Password changed.');
-						AsyncStorage.setItem('password', res.password);
+						AsyncStorage.setItem('password', this.state.new_password);
 						this.props.navigation.navigate('Home');
 					}
 
@@ -101,51 +112,83 @@ export default class Change extends React.Component {
 		const {navigate} = this.props.navigation;
 	  
 		return (
+			!this.state.fontLoaded ? <Text>Loading....</Text> :
 			<KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
-			<ScrollView contentContainerStyle={styles.contentContainer}>
-	
+
+				<Header
+					leftComponent={{ icon: 'menu', color: '#fff', size: SCREEN_WIDTH/14, type:'entypo', onPress: () => this.props.navigation.navigate('DrawerOpen')}}
+					centerComponent={{ text: 'SETTINGS', style: { color: '#fff',fontSize: SCREEN_WIDTH/20, fontFamily:'Montserrat-Bold' } }}
+					outerContainerStyles={{backgroundColor:'black'}}
+				/>
 			<View style={styles.container}>
 
-				<TextInput 
-				style={styles.textInput} 
-				placeholder='Enter current password'
-				onChangeText={(old_password)=>this.setState({old_password})}
-				ref={ input => this.old_passwordInput = input}
-				onSubmitEditing={() => {
-                    this.setState({old_password_valid: this.old_passwords_match()});
-                    this.old_passwordInput.focus();
-                  }}
-				underlineColorAndroid='transparent'
-				/>
-
-				<TextInput 
-				style={styles.textInput} 
-				placeholder='Enter new password'
-				onChangeText={ (new_password) => this.setState({new_password}) }
-				underlineColorAndroid='transparent'
-				/>
-					
-				<TextInput 
-				style={styles.textInput} 
-				placeholder='Confirm new password'
-				onChangeText={ (confirm_password) => this.setState({confirm_password}) }
-				ref={ input => this.confirm_passwordInput = input}
-				onSubmitEditing={() => {
-                    this.setState({password_valid: this.new_passwords_match()});
-                    this.confirm_passwordInput.focus();
-                  }}
-				underlineColorAndroid='transparent'
-				/>
+				<View style={styles.inputContainers}>
+					<FormLabel style={{fontFamily:'Montserrat-Regular'}}>Current Password</FormLabel>
+					<FormInput
+					inputStyle={[styles.inputStyle,{fontFamily:'Montserrat-Regular'}]}
+					placeholder='Enter current password'
+					returnKeyType="next"
+					onChangeText={(old_password)=>this.setState({old_password})}
+					ref={ input => this.old_passwordInput = input}
+					onSubmitEditing={() => {
+						this.setState({old_password_valid: this.old_passwords_match()});
+						this.new_passwordInput.focus();
+					}}
+					underlineColorAndroid='transparent'
+					placeholderTextColor="#5388C8"
+					blurOnSubmit={false}
+					secureTextEntry={true}
+					/>
+				</View>
 				
-				<TouchableOpacity
-				style={styles.textInput}
-				onPress={this.changePassword}>
-				<Text>SAVE</Text>
-				</TouchableOpacity>
-					
+				<View style={styles.inputContainers}>
+					<FormLabel style={{fontFamily:'Montserrat-Regular'}}>New Password</FormLabel>
+					<FormInput 
+					inputStyle={[styles.inputStyle,{fontFamily:'Montserrat-Regular'}]}
+					placeholder='Enter new password'
+					returnKeyType="next"
+					onChangeText={ (new_password) => this.setState({new_password}) }
+					ref={ input => this.new_passwordInput = input}
+					onSubmitEditing={() => {
+						this.setState({password_valid: this.new_passwords_match()});
+						this.confirm_passwordInput.focus();
+					}}
+					underlineColorAndroid='transparent'
+					placeholderTextColor="#5388C8"
+					blurOnSubmit={false}
+					secureTextEntry={true}
+					/>
+				</View>
+				
+				<View style={styles.inputContainers}>
+					<FormLabel style={{fontFamily:'Montserrat-Regular'}}>Confirm Password</FormLabel>
+					<FormInput 
+					inputStyle={[styles.inputStyle,{fontFamily:'Montserrat-Regular'}]}
+					label='Confirm password'
+					placeholder='Confirm new password'
+					returnKeyType="done"
+					onChangeText={ (confirm_password) => this.setState({confirm_password}) }
+					ref={ input => this.confirm_passwordInput = input}
+					onSubmitEditing={() => {
+						this.setState({password_valid: this.new_passwords_match()});
+						this.changePassword;
+					}}
+					underlineColorAndroid='transparent'
+					placeholderTextColor="#5388C8"
+					blurOnSubmit={false}
+					secureTextEntry={true}
+					/>
+				</View>
+				
+				<Button
+				title ='SAVE'
+				buttonStyle={styles.saveButton}
+				textStyle={{fontWeight: 'bold',fontFamily:'Montserrat-Regular'}}
+				onPress={this.changePassword}
+				rounded={true}
+				/>
+						
 			</View>
-				
-			</ScrollView>
 			</KeyboardAvoidingView>
 		);
 	} 
@@ -169,12 +212,12 @@ const styles = StyleSheet.create({
 		color: '#fff',
 		fontWeight: 'bold'
 	},
-	textInput: {
-		alignSelf: 'stretch',
-		padding: 20,
-		marginBottom: 5,
-		backgroundColor: '#fff',
-		flexDirection: 'row',
+	inputStyle: {
+		
+	},
+	inputContainers: {
+		padding: 10,
+		width:350
 	},
 	btn: {
 		alignSelf: 'stretch',
@@ -189,5 +232,12 @@ const styles = StyleSheet.create({
 		padding: 16,
 		marginBottom: 20,
     },
-
+	saveButton: {
+		height: 50, 
+		width: 150, 
+		backgroundColor: '#00c6ff', 
+		borderWidth: 2, 
+		borderColor: 'white',
+		marginVertical: 30
+	}
 })
