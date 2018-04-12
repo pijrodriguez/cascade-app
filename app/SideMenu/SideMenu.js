@@ -2,12 +2,13 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import styles from './SideMenu.style';
 import {NavigationActions} from 'react-navigation';
-import {ScrollView, Text, View, Icon, Image, ImageBackground, AsyncStorage, TouchableHighlight} from 'react-native';
+import {ScrollView, Text, View, Icon, Image, ImageBackground, AsyncStorage, TouchableHighlight, TouchableOpacity} from 'react-native';
 import { Avatar, Divider } from 'react-native-elements';
 import { Font } from 'expo';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Modal from 'react-native-modal';
 
 class SideMenu extends Component {
   navigateToScreen = (route) => () => {
@@ -26,6 +27,26 @@ class SideMenu extends Component {
         fontLoaded: false,
   		}
   }
+
+  state = {
+    visibleModal: null,
+  };
+	
+	_renderButton = (text, onPress) => (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.button}>
+        <Text>{text}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  _renderModalContent = (text) => (
+    <View style={styles.modalContent}>
+      <Text>{text}</Text>
+	  {this._renderButton('Yes', () => {this.logout()})}
+      {this._renderButton('No', () => this.setState({ visibleModal: null }))}
+    </View>
+  );
   
   async componentDidMount() {
 		//load the custom fonts using the Font package from expo
@@ -93,6 +114,8 @@ class SideMenu extends Component {
                SETTINGS
             </Text>
             </View>
+			
+			
 
             <View style={styles.optionContainer} onPress={this.navigateToScreen('Settings')}>
             <MaterialIcons					
@@ -100,12 +123,20 @@ class SideMenu extends Component {
               color='#00c6ff'
               size={40}
               style={{}}/>
-            <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold'}]} onPress={this.logout}>
+            <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold'}]} onPress={this.popalert}>
             LOG OUT
             </Text>
             </View>
 
             </View>
+			
+			<Modal
+          isVisible={this.state.visibleModal === 2}
+          animationIn={'slideInLeft'}
+          animationOut={'slideOutRight'}
+        >
+          {this._renderModalContent('log Out?')}
+        </Modal>
           </View>
         </ScrollView>
      
@@ -116,7 +147,12 @@ class SideMenu extends Component {
   logout = () => {
     AsyncStorage.multiRemove(['user','user_id','first_name','last_name', 'password']);
     this.setState({user:'Name'})
+	this.setState({ visibleModal: null })
     this._reloadState().done();
+    }
+  
+  popalert = () => {
+    this.setState({ visibleModal: 2 })
     }
 }
 
