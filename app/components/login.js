@@ -202,7 +202,8 @@ export default class Login extends React.Component {
 					['user_id', JSON.stringify(res.user_id)],
 					['first_name', res.first_name],
 					['last_name', res.last_name],
-					['password', res.password]
+					['password', res.password],
+					['user_rating', JSON.stringify(res.user_rating)]
 					]);
 					this.props.navigation.navigate('Home');
 				}

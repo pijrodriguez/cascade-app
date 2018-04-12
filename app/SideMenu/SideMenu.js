@@ -145,7 +145,7 @@ class SideMenu extends Component {
   }
 
   logout = () => {
-    AsyncStorage.multiRemove(['user','user_id','first_name','last_name', 'password']);
+    AsyncStorage.multiRemove(['user','user_id','first_name','last_name', 'password', 'user_rating']);
     this.setState({user:'Name'})
 	this.setState({ visibleModal: null })
     this._reloadState().done();

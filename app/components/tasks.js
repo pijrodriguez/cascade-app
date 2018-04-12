@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Dimensions, RefreshControl } from 'react-native';
 import { Font } from 'expo';
-import { Header, Divider } from 'react-native-elements';
+import { Header, Divider, ButtonGroup } from 'react-native-elements';
 import Entypo from 'react-native-vector-icons/Entypo';
 import TaskComponent from './taskComponent';
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -14,11 +14,17 @@ export default class Tasks extends React.Component {
 	constructor(props) {
 		super();
 		this.state = {
-			tasks: null,
+			tasks:null,
+			active: null,
+			done: null,
+			missed: null,
 			fontLoaded: false,
 			noTasks: true,
-			refreshing: false
+			refreshing: false,
+			selectedIndex: 0
 			}
+		
+		this.updateIndex = this.updateIndex.bind(this)
     }
 	
 	_onRefresh() {
@@ -26,10 +32,21 @@ export default class Tasks extends React.Component {
 		this.getTasks().then(this.setState({refreshing:false}));
 	}
 
+	//this function is called when the goals are filtered so that the UI will refresh
+	_filter(selectedIndex) {
+		this.setState({refreshing: true});
+		this.getTasks().then(this.setState({refreshing:false,selectedIndex}));
+	}
+
+	updateIndex (selectedIndex) {
+		this.setState({selectedIndex})
+	}
+
+	//this function is called to fetch the goals from the server
     getTasks = async () => {
 
 		//clear the tasks array
-		this.setState({tasks:null});
+		this.setState({tasks:null,active:null, done:null, missed:null});
 
 		//get user_id from AsyncStorage and use it to fetch this user's tasks
 		var user_id = await AsyncStorage.getItem('user_id');
@@ -50,7 +67,32 @@ export default class Tasks extends React.Component {
 
 			if (res.success == true) {
 				console.log('CALLED');
-				this.setState({ tasks: res.tasks, noTasks: false });
+				var goals = [];
+				var activeGoals = [];
+				var finishedGoals = [];
+				var missedGoals = [];
+				
+				//seperate the missed goals, active goals and finished goals for filtering purposes
+				//push all the goals in an array as well
+				res.tasks.forEach(element => {
+					goals.push(element);
+					if(element.missed == false){
+						if(element.finished_date != null){
+							finishedGoals.push(element);
+						} else {
+							activeGoals.push(element);
+						}
+					} else {
+						missedGoals.push(element);
+					}
+				});
+				
+				this.setState({ 
+					tasks:goals,
+					active:activeGoals,
+					done:finishedGoals,
+					missed:missedGoals, 
+					noTasks: false });
 			}
 
 			else {
@@ -78,15 +120,25 @@ export default class Tasks extends React.Component {
 	
     showTasks() {
 		console.log('Show tasks');
-		console.log(this.state.tasks);
-
 		//check if the user has tasks
+		//filter the tasks based on their status
 		if( this.state.tasks != null ){
-		return this.state.tasks.map((task, index) => <TaskComponent task={task} key={index} />);
+			if( this.state.selectedIndex == 0) {
+				return this.state.tasks.map((task, index) => <TaskComponent task={task} key={index} />);
+			} else if( this.state.selectedIndex == 1){
+				return this.state.active.map((task, index) => <TaskComponent task={task} key={index} />);
+			} else if( this.state.selectedIndex == 2){
+				return this.state.done.map((task, index) => <TaskComponent task={task} key={index} />);
+			} else if( this.state.selectedIndex == 3){
+				return this.state.missed.map((task, index) => <TaskComponent task={task} key={index} />);
 			}
 		}
+	}
 
   render() {
+	const buttons = ['All', 'Active', 'Done', 'Missed']
+	const { selectedIndex } = this.state
+
     return (
 		!this.state.fontLoaded ? <Text> Loading... </Text> :
 		<View style={styles.wrapper}>
@@ -104,6 +156,14 @@ export default class Tasks extends React.Component {
 					/>
 				}
 			>
+			<ButtonGroup
+			onPress={this.updateIndex && this._filter.bind(this)}
+			selectedIndex={selectedIndex}
+			buttons={buttons}
+			containerStyle={{height: 30}}
+			textStyle={{fontFamily:'Montserrat-SemiBold'}}
+			selectedButtonStyle={{borderBottomColor:'#00c6ff', borderBottomWidth: 2}}
+			/>
 				{this.state && this.state.noTasks ? 
 				this.state &&
 				<View style={[styles.noTasks, {height:SCREEN_HEIGHT/3, borderRadius:SCREEN_WIDTH/30}]}>
