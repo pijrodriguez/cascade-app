@@ -1,7 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
-import { Header, Card, Divider, Avatar, Button} from 'react-native-elements';
+import { Header, Card, Divider, Avatar, Button, Rating} from 'react-native-elements';
 import { Font } from 'expo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Dimensions.get('window').height
@@ -14,7 +16,10 @@ export default class Profile extends React.Component {
 			fontLoaded: false,
 			firstName: '',
 			lastName: '',
-			tasksCount: 'no'
+			tasksCount: 'no',
+			missed: 'no',
+			finished: 'no',
+			rating: 0
 		}
 	}
 
@@ -33,13 +38,16 @@ export default class Profile extends React.Component {
 	}
 
 	async componentDidMount() {
+		//get user rating and set it as state
+		var userRating = parseInt(await AsyncStorage.getItem('user_rating'));
 		//load the custom fonts using the Font package from expo
 		await Font.loadAsync({
 			'Montserrat-Regular': require('../../assets/fonts/Montserrat-Regular.ttf'),
 			'Montserrat-SemiBold': require('../../assets/fonts/Montserrat-SemiBold.ttf'),
 			'Montserrat-Bold': require('../../assets/fonts/Montserrat-Bold.ttf'),			
 		});
-		this.setState({fontLoaded:true})
+
+		this.setState({fontLoaded:true,rating: userRating})
 		this._loadInitialState().done();
 		this.getTasksCount();
 	}
@@ -64,7 +72,19 @@ export default class Profile extends React.Component {
 
 			if (res.success == true) {
 				console.log('COUNT');
-				this.setState({tasksCount:Object.keys(res.tasks).length})
+				var missedGoals = [];
+				var finishedGoals = [];
+				//iterate through the tasks and separate the missed goals with the finished goals
+				res.tasks.forEach(element => {
+					if(element.missed == false){
+						if(element.finished_date != null){
+							finishedGoals.push(element);
+						}
+					} else {
+						missedGoals.push(element);
+					}
+				});
+				this.setState({tasksCount:Object.keys(res.tasks).length, missed:Object.keys(missedGoals).length, finished:Object.keys(finishedGoals).length})
 			}
 
 			else {
@@ -107,7 +127,63 @@ export default class Profile extends React.Component {
 					textStyle={{fontFamily:'Montserrat-Bold'}}
 					onPress={() => this.props.navigation.navigate('Tasks')}
 					/>
-				</Card>		
+				</Card>	
+				<ScrollView
+					horizontal
+				>
+				<Card
+					containerStyle = {{width:SCREEN_WIDTH - 30}}
+				>
+
+				<View style={{alignItems:'center'}}>
+				<Rating
+					imageSize={40}
+					readonly
+					startingValue={this.state.rating}
+					type='star'
+					style={{marginTop:10}}
+					/>
+				
+				<Text style= {{fontFamily:'Montserrat-Regular', fontSize:SCREEN_WIDTH/25, marginHorizontal:10, marginVertical:10}}>
+					{'Your client have given you this rating'}
+				</Text>
+				</View>
+				</Card>
+				<Card
+				containerStyle = {{width:SCREEN_WIDTH - 30}}
+				>
+
+				<View style={{flexDirection: 'row'}}>
+				<FontAwesome
+					name='check-square-o'
+					color='#00E676'
+					size={100}
+                />
+				<Text style= {{fontFamily:'Montserrat-Regular', fontSize:SCREEN_WIDTH/20, marginHorizontal:20}}>
+					{'You have ' + this.state.finished+'\ngoals finished. \nKeep up the good \nwork!'}
+				</Text>
+				</View>
+
+				</Card>
+
+				<Card
+				containerStyle = {{width:SCREEN_WIDTH - 30}}
+				>
+
+				<View style={{flexDirection: 'row'}}>
+				<MaterialIcons
+					name='error'
+					color='#EF5350'
+					size={100}
+                />
+				<Text style= {{fontFamily:'Montserrat-Regular', fontSize:SCREEN_WIDTH/20, marginHorizontal:20}}>
+					{'You have ' + this.state.finished+'\ngoals missed. \nTime to work \nharder!'}
+				</Text>
+				</View>
+
+				</Card>
+				
+				</ScrollView>
 				</ScrollView>
 			</View>
     );

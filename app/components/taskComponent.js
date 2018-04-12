@@ -59,7 +59,6 @@ export default class TaskComponent extends React.Component {
 		.then((res => {
 
 			if (res.success == true) {
-				console.log('CALLED');
 				this.setState({taskStatus:'Done', taskColor:'#00E676', icon: {name: 'check', type: 'font-awesome'}});
 			}
 
@@ -72,7 +71,6 @@ export default class TaskComponent extends React.Component {
 	}
 
 	checkGoalCompletion(user,goal, missed, finished_date, due_date) {
-		console.log('GOAL COMPLETION:');
 		
 		//get current date
 		var now = new Date();
