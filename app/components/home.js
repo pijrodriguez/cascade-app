@@ -48,7 +48,7 @@ export default class Profile extends React.Component {
 		//get user_id from AsyncStorage and use it to fetch this user's tasks
 		var user_id = await AsyncStorage.getItem('user_id');
 		
-      fetch('http://614b441f.ngrok.io/count-tasks', {
+      fetch('http://cascade-app-server.herokuapp.com/count-tasks', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
