@@ -88,7 +88,7 @@ export default class Change extends React.Component {
 		if (this.old_passwords_match() == true) {
 			if (this.new_passwords_match() == true) {
 			
-				fetch('http://267941cd.ngrok.io/password', {
+				fetch('http://cascade-app-server.herokuapp.com/password', {
 					method: 'POST',
 					headers: {
 						'Accept': 'application/json',
