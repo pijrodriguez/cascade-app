@@ -75,15 +75,17 @@ export default class Tasks extends React.Component {
 				//seperate the missed goals, active goals and finished goals for filtering purposes
 				//push all the goals in an array as well
 				res.tasks.forEach(element => {
-					goals.push(element);
 					if(element.missed == false){
 						if(element.finished_date != null){
 							finishedGoals.push(element);
+							goals.push(element);
 						} else {
 							activeGoals.push(element);
+							goals.unshift(element);
 						}
 					} else {
 						missedGoals.push(element);
+						goals.push(element);
 					}
 				});
 				
@@ -160,7 +162,7 @@ export default class Tasks extends React.Component {
 			onPress={this.updateIndex && this._filter.bind(this)}
 			selectedIndex={selectedIndex}
 			buttons={buttons}
-			containerStyle={{height: 30}}
+			containerStyle={{height: 30, marginTop:15}}
 			textStyle={{fontFamily:'Montserrat-SemiBold'}}
 			selectedButtonStyle={{borderBottomColor:'#00c6ff', borderBottomWidth: 2}}
 			/>

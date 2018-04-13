@@ -1,9 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, Alert, Dimensions } from 'react-native';
 import { Badge, Card, Divider, Button, Overlay } from 'react-native-elements';
 import { Font } from 'expo';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Moment from 'moment';
+
+const SCREEN_WIDTH = Dimensions.get('window').width
+const SCREEN_HEIGHT = Dimensions.get('window').height
 
 export default class TaskComponent extends React.Component {
 
@@ -124,14 +127,20 @@ export default class TaskComponent extends React.Component {
 		let {task} = this.props;
 		
 		//format the date
-		var due_date = task.due_date.substring(0,10);
-		var formatted_date = Moment(due_date).format('ddd MMMM D')
+		var due_date = task.due_date.substring(0,16);
+		var formatted_date = Moment(due_date).format('ddd MMMM D hh:mm a')
 
     return (
 		!this.state.fontLoaded ? <Text>Loading....</Text> :
-		<Card title={task.title} titleStyle={{fontFamily:'Montserrat-SemiBold'}}>
-			<Text style={{fontSize:15, fontFamily:'Montserrat-Regular'}}>{task.description}</Text>
-			<Text style={{fontSize:20, fontFamily:'Montserrat-SemiBold'}}>{formatted_date}</Text>
+		<Card 
+		title={task.title} 
+		titleStyle={{fontFamily:'Montserrat-SemiBold'}}
+		containerStyle={{borderLeftColor:this.state.taskColor, borderLeftWidth:5}}
+		>
+		<View style={{marginHorizontal:15, justifyContent:'space-around'}}>
+			<Text style={{fontSize:SCREEN_WIDTH/25, fontFamily:'Montserrat-Regular'}}>{task.description}</Text>
+			<Text style={{fontSize:SCREEN_WIDTH/20, fontFamily:'Montserrat-SemiBold'}}>{formatted_date}</Text>		
+		</View>
 			<Button
 			title ={this.state.taskStatus}
 			buttonStyle={[styles.doneButton,{backgroundColor:this.state.taskColor}]}
