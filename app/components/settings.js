@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, TouchableHighlight, Alert, AsyncStorage, ListView, ScrollView, list, Dimensions} from 'react-native';
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, TouchableHighlight, Alert, AsyncStorage, ListView, ScrollView, list, Dimensions, Button} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { Header, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Notification from 'react-native-in-app-notification';
 import { Font } from 'expo';
+import Modal from 'react-native-modal';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Dimensions.get('window').height
@@ -20,10 +21,29 @@ export default class Settings extends React.Component {
 			customtheme: 'false',
 			show: true,
 			fontLoaded: false,
-		
 			value: this.props.value,
   		}
   }
+	
+	state = {
+    visibleModal: null,
+  };
+	
+	_renderButton = (text, onPress) => (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.button}>
+        <Text>{text}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  _renderModalContent = (text) => (
+    <View style={styles.modalContent}>
+      <Text>{text}</Text>
+	  {this._renderButton('Yes', () => {this.logout()})}
+      {this._renderButton('No', () => this.setState({ visibleModal: null }))}
+    </View>
+  );
 
   async componentDidMount() {
 	//load the custom fonts using the Font package from expo
@@ -54,6 +74,10 @@ export default class Settings extends React.Component {
     AsyncStorage.multiRemove(['user','user_id','first_name','last_name', 'password']);
 	this._reloadState().done();
   }
+  
+  popalert = () => {
+    this.setState({ visibleModal: 2 })
+    }
 
   render() {
 	  
@@ -90,8 +114,18 @@ export default class Settings extends React.Component {
 			<ListItem
 				title={<Text style={{fontFamily:'Montserrat-Regular', fontSize:SCREEN_WIDTH/25}}>Log out</Text>}
 				leftIcon={{name:'exit-to-app', type:'material-community-icons'}}
-				onPress={this.logout}
+				onPress={this.popalert}
 			/>
+			
+			
+			
+			<Modal
+          isVisible={this.state.visibleModal === 2}
+          animationIn={'slideInLeft'}
+          animationOut={'slideOutRight'}
+        >
+          {this._renderModalContent('log Out?')}
+        </Modal>
 
 		</View>
 			
@@ -166,6 +200,27 @@ const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 		padding: 16,
 		marginBottom: 20,
+  },
+  button: {
+    backgroundColor: 'lightblue',
+    padding: 12,
+    margin: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  bottomModal: {
+    justifyContent: 'flex-end',
+    margin: 0,
   },
 
 })
