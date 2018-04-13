@@ -140,7 +140,7 @@ export default class Settings extends React.Component {
 
 changePassword = () => {
 
-		fetch('https://cascade-app-server.herokuapp.com/users', {
+		fetch('https://follow-thru-server.herokuapp.com/users', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',

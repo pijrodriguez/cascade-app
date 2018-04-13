@@ -221,7 +221,7 @@ export default class Login extends React.Component {
 	login = () => {
 		console.log('Logging in');
 		if(this.validateEmail(this.state.email) == true && this.validatePassword(this.state.password) == true){
-			fetch('https://cascade-app-server.herokuapp.com/users', {
+			fetch('https://follow-thru-server.herokuapp.com/users', {
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json',
