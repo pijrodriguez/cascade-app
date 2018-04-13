@@ -41,7 +41,7 @@ export default class Login extends React.Component {
 	}
 
 	validatePassword(pass) {
-		var regPass = regExPassword = /^[a-zA-Z0-9]{4,23}$/;
+		var regPass = /^[a-zA-Z0-9]{4,23}$/;
 
 			if ( regPass.test(pass) == true ){
 				console.log(regPass.test(pass));
@@ -220,7 +220,8 @@ export default class Login extends React.Component {
   
 	login = () => {
 		console.log('Logging in');
-		if(this.validateEmail(this.state.email) == true && this.validatePassword(this.state.password) == true){
+		if(this.validateEmail(this.state.email) == true){
+			if(this.validatePassword(this.state.password) == true){
 			fetch('https://follow-thru-server.herokuapp.com/users', {
 				method: 'POST',
 				headers: {
@@ -253,6 +254,9 @@ export default class Login extends React.Component {
 	
 			}))
 			.done();
+			} else {
+				this.setState({ password_modal: true })
+			}
 		} else {
 			this.setState({ email_modal: true })
 		}
