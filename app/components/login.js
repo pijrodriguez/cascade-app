@@ -20,6 +20,8 @@ export default class Login extends React.Component {
 			password: '',
 			email_valid: true,
 			email_modal: false,
+			password_valid: true,
+			password_modal: false,
 			user_not_found: false,
 			fontLoaded: false
   		}
@@ -27,20 +29,36 @@ export default class Login extends React.Component {
 
   validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		if ( re.test(email) == true ){
+			console.log(re.test(email));
+			this.setState({ email_modal: false });
+			return re.test(email);
+		} else {
+			console.log(re.test(email));
+			this.setState({ email_modal: true });
+			return re.test(email);
+		}
+	}
 
-	if ( re.test(email) == true ){
-		console.log(re.test(email));
-		this.setState({ email_modal: false });
-		return re.test(email);
-	} else {
-		console.log(re.test(email));
-		this.setState({ email_modal: true });
-		return re.test(email);
-	}
-	}
+	validatePassword(pass) {
+		var regPass = regExPassword = /^[a-zA-Z0-9]{4,23}$/;
+
+			if ( regPass.test(pass) == true ){
+				console.log(regPass.test(pass));
+				this.setState({ password_modal: false });
+				return regPass.test(pass);
+			} else {
+				console.log(regPass.test(pass));
+				this.setState({ password_modal: true });
+				return regPass.test(pass);
+			}
+		}
   
   toggleEmailModal = () =>
   this.setState({ email_modal: !this.state.email_modal, email_valid: !this.state.email_valid });
+
+  togglePasswordModal = () =>
+  this.setState({ password_modal: !this.state.password_modal, password_valid: !this.state.password_valid });
 
   toggleUserModal = () =>
   this.setState({ user_not_found: !this.state.user_not_found });  
@@ -67,7 +85,7 @@ export default class Login extends React.Component {
   render() {
 	  
 	const {navigate} = this.props.navigation;
-	const { email, password, email_valid, email_modal, user_not_found } = this.state;
+	const { email, password, email_valid, email_modal, user_not_found, password_modal, password_valid } = this.state;
 	  
     return (
 		!this.state.fontLoaded ? <Text>Loading....</Text> :
@@ -88,6 +106,25 @@ export default class Login extends React.Component {
 				buttonStyle={styles.modalButton}
 				textStyle={{fontWeight: 'bold'}}
 				onPress={this.toggleEmailModal}
+				/>
+			</View>
+			</Modal>
+
+			<Modal 
+			isVisible={password_modal}
+			onBackdropPress={() => this.setState({ password_modal: false })}>
+			<View style={[styles.modalStyle, {height:SCREEN_HEIGHT/3, borderRadius:SCREEN_WIDTH/30}]}>
+				<MaterialIcon
+					name='error'
+					color='rgba(171, 189, 219, 1)'
+					size={100}
+                />
+				<Text style={{fontSize:SCREEN_WIDTH/25, marginVertical:10, fontFamily:'Montserrat-Bold'}}>Please enter a valid password</Text>
+				<Button
+				title ='CLOSE'
+				buttonStyle={styles.modalButton}
+				textStyle={{fontWeight: 'bold'}}
+				onPress={this.togglePasswordModal}
 				/>
 			</View>
 			</Modal>
@@ -156,6 +193,9 @@ export default class Login extends React.Component {
 				placeholder='Password'
 				ref={ input => this.passwordInput = input}
 				onChangeText={ (password) => this.setState({password}) }
+				onSubmitEditing={() => {
+                    this.setState({password_valid: this.validatePassword(password)})
+                  }}
 				returnKeyType="done"
 				secureTextEntry={true}
 				underlineColorAndroid='transparent'
@@ -180,7 +220,7 @@ export default class Login extends React.Component {
   
 	login = () => {
 		console.log('Logging in');
-		if(this.validateEmail(this.state.email) == true){
+		if(this.validateEmail(this.state.email) == true && this.validatePassword(this.state.password) == true){
 			fetch('http://cascade-app-server.herokuapp.com/users', {
 				method: 'POST',
 				headers: {

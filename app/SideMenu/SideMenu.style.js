@@ -50,4 +50,12 @@ export default {
     justifyContent: 'flex-end',
     margin: 0,
   },
+  modalButton: {
+		height: 40, 
+		width: 100, 
+		backgroundColor: '#00c6ff', 
+		borderWidth: 2, 
+		borderColor: 'white', 
+		marginVertical: 5
+	}
 };
