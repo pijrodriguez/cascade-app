@@ -51,7 +51,7 @@ export default class Tasks extends React.Component {
 		//get user_id from AsyncStorage and use it to fetch this user's tasks
 		var user_id = await AsyncStorage.getItem('user_id');
 		
-      fetch('http://267941cd.ngrok.io/tasks', {
+      fetch('https://cascade-app-server.herokuapp.com/tasks', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',

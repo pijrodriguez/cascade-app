@@ -46,7 +46,7 @@ export default class TaskComponent extends React.Component {
 		} else if(this.state.taskStatus == 'Done') {
 			console.log('Done')
 		} else {
-		fetch('http://267941cd.ngrok.io/finished-task', {
+		fetch('https://cascade-app-server.herokuapp.com/finished-task', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -91,7 +91,7 @@ export default class TaskComponent extends React.Component {
 			if(!missed) {
 			
 				//fetch and count missed tasks
-				fetch('http://267941cd.ngrok.io/missed-task', {
+				fetch('https://cascade-app-server.herokuapp.com/missed-task', {
 					method: 'POST',
 					headers: {
 						'Accept': 'application/json',
