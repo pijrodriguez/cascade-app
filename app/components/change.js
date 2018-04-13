@@ -1,10 +1,12 @@
 import React from 'react';
 import { StyleSheet, Dimensions, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, AsyncStorage, ListView, ScrollView, list, Switch } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import {NavigationActions} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Font } from 'expo';
 import {FormLabel, FormInput, Header, Divider, Button} from 'react-native-elements';
 import Modal from 'react-native-modal';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Dimensions.get('window').height
@@ -14,34 +16,23 @@ export default class Change extends React.Component {
 	constructor(props) {
   		super(props);
   		this.state = {
-  			old_password: '',
-			password_valid: true,
-			new_password: '',
-			confirm_password: '',
-			current_password: '',
-			current_id: '',
-			fontLoaded: false
+				old_password: '',
+				old_password_valid: false,
+				password_valid: false,
+				new_password: '',
+				confirm_password: '',
+				current_password: '',
+				current_id: '',
+				confirmpass_modal: false,
+				old_password_modal:false,
+				success_modal: false,
+				fontLoaded: false
 		}
 	}
 	
 	state = {
     visibleModal: null,
   };
-	
-	_renderButton = (text, onPress) => (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.button}>
-        <Text>{text}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-
-  _renderModalContent = (text) => (
-    <View style={styles.modalContent}>
-      <Text>{text}</Text>
-      {this._renderButton('Close', () => this.setState({ visibleModal: null }))}
-    </View>
-  );
 
 
 	async componentDidMount() {
@@ -69,12 +60,12 @@ export default class Change extends React.Component {
 	//Function to check if the old password entered matches the current one
     old_passwords_match = () => {
 	    if (this.state.old_password !== null) {
-			if (this.state.old_password == this.state.current_password) {
+				if (this.state.old_password == this.state.current_password) {
 				console.log("Entered password matches current password");
 				//this.changePassword();
-				return(this.state.password_valid)
+				return true
 			} else {
-				console.log("Entered password does not match current password");
+				this.setState({old_password_modal: true})
 			}
 		}
 	}
@@ -82,13 +73,13 @@ export default class Change extends React.Component {
 	//Function to check if the new password entered matches the current new one
 	new_passwords_match = () => {
 	    if (this.state.confirm_password !== null) {
-			if (this.state.new_password == this.state.confirm_password) {
-				console.log("Entered password matches new password");
-				//this.changePassword();
-				return(this.state.password_valid)
-			} else {
-				console.log("Entered password does not match new password");
-			}
+				if (this.state.new_password == this.state.confirm_password) {
+					console.log("Entered password matches new password");
+					//this.changePassword();
+					return true
+				} else {
+					this.setState({confirmpass_modal:true})
+				}
 		}
 	}
 
@@ -97,7 +88,7 @@ export default class Change extends React.Component {
 		if (this.old_passwords_match() == true) {
 			if (this.new_passwords_match() == true) {
 			
-				fetch('http://cascade-app-server.herokuapp.com/password', {
+				fetch('http://267941cd.ngrok.io/password', {
 					method: 'POST',
 					headers: {
 						'Accept': 'application/json',
@@ -113,24 +104,33 @@ export default class Change extends React.Component {
 				.then((res => {
 
 					if (res.success == true) {
-						this.setState({ visibleModal: 4 })
+						this.setState({ success_modal: true })
 						console.log('Password changed.');
 						AsyncStorage.setItem('password', this.state.new_password);
-						
 					}
 
 				}))
 				.done();
 			} else {
 				console.log("Entered password does not match new password");
-				this.setState({ visibleModal: 2 })
+				this.setState({confirmpass_modal:true});
 			}
 		} else {
 			console.log("Entered password does not match current password");
-			this.setState({ visibleModal: 2 })
+			this.setState({old_password_modal:true});
 		} 
 	}
 
+	 
+  toggleConfirmpassModal = () =>
+  this.setState({ confirmpass_modal: !this.state.confirmpass_modal});
+
+  toggleOldPassModal = () =>
+  this.setState({ old_password_modal: !this.state.old_password_modal});
+
+	toggleSuccessModal = () =>
+	this.setState({ success_modal: !this.state.success_modal});
+	
 	render() {
 
 		const {navigate} = this.props.navigation;
@@ -145,19 +145,49 @@ export default class Change extends React.Component {
 					outerContainerStyles={{backgroundColor:'black'}}
 				/>
 			<View style={styles.container}>
+
+				<Modal 
+				isVisible={this.state.old_password_modal}
+				onBackdropPress={() => this.setState({ old_password_modal: false })}>
+				<View style={[styles.modalStyle, {height:SCREEN_HEIGHT/3, borderRadius:SCREEN_WIDTH/30}]}>
+					<MaterialIcon
+						name='error'
+						color='rgba(171, 189, 219, 1)'
+						size={100}
+									/>
+					<Text style={{fontSize:SCREEN_WIDTH/25, marginVertical:10, fontFamily:'Montserrat-Bold'}}>{'This does not match your \ncurrent password'}</Text>
+					<Button
+					title ='CLOSE'
+					buttonStyle={styles.modalButton}
+					textStyle={{fontWeight: 'bold'}}
+					onPress={this.toggleOldPassModal}
+					/>
+				</View>
+				</Modal>
+
 				
-        <Modal
-          isVisible={this.state.visibleModal === 2}
-          animationIn={'slideInLeft'}
-          animationOut={'slideOutRight'}
-        >
-          {this._renderModalContent('Password does not match')}
-        </Modal>
+				<Modal 
+				isVisible={this.state.confirmpass_modal}
+				onBackdropPress={() => this.setState({ confirmpass_modal: false })}>
+				<View style={[styles.modalStyle, {height:SCREEN_HEIGHT/3, borderRadius:SCREEN_WIDTH/30}]}>
+					<MaterialIcon
+						name='error'
+						color='rgba(171, 189, 219, 1)'
+						size={100}
+									/>
+					<Text style={{fontSize:SCREEN_WIDTH/25, marginVertical:10, fontFamily:'Montserrat-Bold'}}>{'Entered passwords \ndoes not match'}</Text>
+					<Button
+					title ='CLOSE'
+					buttonStyle={styles.modalButton}
+					textStyle={{fontWeight: 'bold'}}
+					onPress={this.toggleConfirmpassModal}
+					/>
+				</View>
+				</Modal>
+			
         
         <Modal
-          isVisible={this.state.visibleModal === 4}
-          backdropColor={'red'}
-          backdropOpacity={1}
+          isVisible={this.state.success_modal}
           animationIn={'zoomInDown'}
           animationOut={'zoomOutUp'}
           animationInTiming={1000}
@@ -165,7 +195,21 @@ export default class Change extends React.Component {
           backdropTransitionInTiming={1000}
           backdropTransitionOutTiming={1000}
         >
-          {this._renderModalContent('Password changed')}
+				<View style={[styles.modalStyle, {height:SCREEN_HEIGHT/3, borderRadius:SCREEN_WIDTH/30}]}>
+
+					<Entypo
+						name='check'
+						color='rgba(171, 189, 219, 1)'
+						size={100}
+					/>
+					<Text style={{fontSize:SCREEN_WIDTH/25, marginVertical:10, fontFamily:'Montserrat-Bold'}}>{'Password Changed.'}</Text>
+					<Button
+					title ='CLOSE'
+					buttonStyle={styles.modalButton}
+					textStyle={{fontWeight: 'bold'}}
+					onPress={() => {this.toggleSuccessModal; this.props.navigation.navigate('Home');}}
+					/>
+					</View>
         </Modal>
 
 				<View style={styles.inputContainers}>
@@ -196,7 +240,6 @@ export default class Change extends React.Component {
 					onChangeText={ (new_password) => this.setState({new_password}) }
 					ref={ input => this.new_passwordInput = input}
 					onSubmitEditing={() => {
-						this.setState({password_valid: this.new_passwords_match()});
 						this.confirm_passwordInput.focus();
 					}}
 					underlineColorAndroid='transparent'
@@ -217,7 +260,7 @@ export default class Change extends React.Component {
 					ref={ input => this.confirm_passwordInput = input}
 					onSubmitEditing={() => {
 						this.setState({password_valid: this.new_passwords_match()});
-						this.changePassword;
+						this.confirm_passwordInput.focus()
 					}}
 					underlineColorAndroid='transparent'
 					placeholderTextColor="#5388C8"
@@ -295,16 +338,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)',
   },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  bottomModal: {
-    justifyContent: 'flex-end',
-    margin: 0,
-  },
+	modalStyle: {
+		justifyContent:'center',
+		alignItems: 'center',
+		backgroundColor: 'white'
+	},
+	modalButton: {
+		height: 40, 
+		width: 200, 
+		backgroundColor: '#00c6ff', 
+		borderWidth: 2, 
+		borderColor: 'white', 
+		borderRadius: 30,
+		marginVertical: 15
+	}
 })

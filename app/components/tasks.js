@@ -51,7 +51,7 @@ export default class Tasks extends React.Component {
 		//get user_id from AsyncStorage and use it to fetch this user's tasks
 		var user_id = await AsyncStorage.getItem('user_id');
 		
-      fetch('http://cascade-app-server.herokuapp.com/tasks', {
+      fetch('http://267941cd.ngrok.io/tasks', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -146,7 +146,7 @@ export default class Tasks extends React.Component {
 		<View style={styles.wrapper}>
             <Header
 				leftComponent={{ icon: 'menu', color: '#fff', size: SCREEN_WIDTH/14, type:'entypo', onPress: () => this.props.navigation.navigate('DrawerOpen')}}
-				centerComponent={{ text: 'TASKS', style: { color: '#fff', fontSize: SCREEN_WIDTH/20, fontFamily:'Montserrat-Bold'} }}
+				centerComponent={{ text: 'GOALS', style: { color: '#fff', fontSize: SCREEN_WIDTH/20, fontFamily:'Montserrat-Bold'} }}
 				outerContainerStyles={{backgroundColor:'black'}}
             />
             
@@ -164,7 +164,7 @@ export default class Tasks extends React.Component {
 			buttons={buttons}
 			containerStyle={{height: 30, marginTop:15}}
 			textStyle={{fontFamily:'Montserrat-SemiBold'}}
-			selectedButtonStyle={{borderBottomColor:'#00c6ff', borderBottomWidth: 2}}
+			selectedButtonStyle={{borderBottomColor:'#191919', borderBottomWidth: 3}}
 			/>
 				{this.state && this.state.noTasks ? 
 				this.state &&

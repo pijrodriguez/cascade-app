@@ -106,7 +106,7 @@ class SideMenu extends Component {
               size={40}
               style={{marginTop:10}}/>
               <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-Regular', fontSize:18}]} onPress={this.navigateToScreen('Tasks')}>
-              TASKS
+              GOALS
               </Text>
             </View>
 
@@ -136,7 +136,7 @@ class SideMenu extends Component {
 
             </View>
 			
-			<Modal
+			  <Modal
           isVisible={this.state.visibleModal === 2}
           animationIn={'slideInLeft'}
           animationOut={'slideOutRight'}

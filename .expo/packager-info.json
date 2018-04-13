@@ -1,8 +1,8 @@
 {
   "expoServerPort": 19000,
-  "expoServerNgrokUrl": "https://b2-yvk.pijrodriguez.cascade-app-client.exp.direct",
-  "packagerNgrokUrl": "https://packager.b2-yvk.pijrodriguez.cascade-app-client.exp.direct",
-  "ngrokPid": 1932,
   "packagerPort": 19001,
-  "packagerPid": 10160
+  "packagerPid": 21260,
+  "expoServerNgrokUrl": "https://bg-nfc.pijrodriguez.cascade-app-client.exp.direct",
+  "packagerNgrokUrl": "https://packager.bg-nfc.pijrodriguez.cascade-app-client.exp.direct",
+  "ngrokPid": 11468
 }

@@ -194,7 +194,7 @@ export default class Login extends React.Component {
 				ref={ input => this.passwordInput = input}
 				onChangeText={ (password) => this.setState({password}) }
 				onSubmitEditing={() => {
-                    this.setState({password_valid: this.validatePassword(password)})
+					this.setState({password_valid: this.validatePassword(password)})
                   }}
 				returnKeyType="done"
 				secureTextEntry={true}
@@ -221,7 +221,7 @@ export default class Login extends React.Component {
 	login = () => {
 		console.log('Logging in');
 		if(this.validateEmail(this.state.email) == true && this.validatePassword(this.state.password) == true){
-			fetch('http://cascade-app-server.herokuapp.com/users', {
+			fetch('http://267941cd.ngrok.io/users', {
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json',

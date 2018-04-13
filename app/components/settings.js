@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, TouchableHighlight, Alert, AsyncStorage, ListView, ScrollView, list, Dimensions, Button} from 'react-native';
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, TouchableHighlight, Alert, AsyncStorage, ListView, ScrollView, list, Dimensions} from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import { Header, ListItem } from 'react-native-elements';
+import { Header, ListItem, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Notification from 'react-native-in-app-notification';
 import { Font } from 'expo';
@@ -30,18 +30,21 @@ export default class Settings extends React.Component {
   };
 	
 	_renderButton = (text, onPress) => (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.button}>
-        <Text>{text}</Text>
-      </View>
-    </TouchableOpacity>
+    <Button
+    title ={text}
+    buttonStyle={styles.modalButton}
+    textStyle={{fontFamily:'Montserrat-SemiBold'}}
+    onPress={onPress}
+    />
   );
 
   _renderModalContent = (text) => (
     <View style={styles.modalContent}>
-      <Text>{text}</Text>
+      <Text style={{fontFamily:'Montserrat-SemiBold', marginVertical: 10, fontSize:SCREEN_WIDTH/25}}>{text}</Text>
+      <View style={{flexDirection:'row'}}>
 	  {this._renderButton('Yes', () => {this.logout()})}
       {this._renderButton('No', () => this.setState({ visibleModal: null }))}
+      </View>
     </View>
   );
 
@@ -124,8 +127,8 @@ export default class Settings extends React.Component {
           animationIn={'slideInLeft'}
           animationOut={'slideOutRight'}
         >
-          {this._renderModalContent('log Out?')}
-        </Modal>
+          {this._renderModalContent('Are you sure you want to log out?')}
+			</Modal>
 
 		</View>
 			
@@ -137,7 +140,7 @@ export default class Settings extends React.Component {
 
 changePassword = () => {
 
-		fetch('http://cascade-app-server.herokuapp.com/users', {
+		fetch('http://267941cd.ngrok.io/users', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -221,6 +224,14 @@ const styles = StyleSheet.create({
   bottomModal: {
     justifyContent: 'flex-end',
     margin: 0,
-  },
+	},
+	modalButton: {
+		height: 40, 
+		width: 100, 
+		backgroundColor: '#00c6ff', 
+		borderWidth: 2, 
+		borderColor: 'white', 
+		marginVertical: 5
+	}
 
 })

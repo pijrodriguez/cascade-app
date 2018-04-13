@@ -57,7 +57,7 @@ export default class Profile extends React.Component {
 		//get user_id from AsyncStorage and use it to fetch this user's tasks
 		var user_id = await AsyncStorage.getItem('user_id');
 		
-      fetch('http://cascade-app-server.herokuapp.com/tasks', {
+      fetch('http://267941cd.ngrok.io/tasks', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -103,11 +103,11 @@ export default class Profile extends React.Component {
 
 		}))
 		.then((() => {
-			if(this.state.missed != 'no'){
-				this.setState({missedMessage:'\nTime to work harder!'})
+			if(this.state.missed != 'no' && this.state.missed != 0){
+				this.setState({missedMessage:'\nTime to work \nharder!'})
 			}
 
-			if(this.state.finished != 'no'){
+			if(this.state.finished != 'no' && this.state.missed != 0){
 				this.setState({finishedMessage:'\nKeep up the good \nwork!'})
 			}
 		}))
@@ -141,7 +141,7 @@ export default class Profile extends React.Component {
 
 				<Card
 				image={require('../../assets/images/getstarted.jpg')}
-				featuredTitle={'You currently have '+ this.state.tasksCount + ' pending tasks'}
+				featuredTitle={'You currently have '+ this.state.tasksCount + ' pending goals'}
 				featuredTitleStyle={{fontSize:20, fontFamily:'Montserrat-Regular', color:'#fff'}}
 				>
 					<Button
@@ -166,7 +166,7 @@ export default class Profile extends React.Component {
 					size={100}
                 />
 				<Text style= {{fontFamily:'Montserrat-Regular', fontSize:SCREEN_WIDTH/20, marginHorizontal:20}}>
-					{'You have ' + this.state.finished+'\ngoals finished.'+ this.state.finishedMessage}
+					{'You have ' + this.state.finished+'\ngoals finished.'+ this.state.finishedMessage }
 				</Text>
 				</View>
 
