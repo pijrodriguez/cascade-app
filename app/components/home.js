@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Dimensions, Image } from 'react-native';
 import { Header, Card, Divider, Avatar, Button} from 'react-native-elements';
 import { Font } from 'expo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -16,9 +16,12 @@ export default class Profile extends React.Component {
 			fontLoaded: false,
 			firstName: '',
 			lastName: '',
+			email: '',
 			tasksCount: 'no',
 			missed: 'no',
-			finished: 'no'
+			finished: 'no',
+			missedMessage: '',
+			finishedMessage: ''
 		}
 	}
 
@@ -27,10 +30,11 @@ export default class Profile extends React.Component {
 		var user = await AsyncStorage.getItem('user');
 		var firstName = await AsyncStorage.getItem('first_name');
 		var lastName = await AsyncStorage.getItem('last_name');
+		var email = await AsyncStorage.getItem('user');
 
 		if (user !== null) {
 			this.props.navigation.navigate('Home');
-			this.setState({firstName:firstName, lastName:lastName});
+			this.setState({firstName:firstName, lastName:lastName,email: email});
 		} else {
 			this.props.navigation.navigate('Login');
 		}
@@ -71,19 +75,23 @@ export default class Profile extends React.Component {
 				console.log('COUNT');
 				var missedGoals = [];
 				var finishedGoals = [];
+				var activeGoals = [];
 				//iterate through the tasks and separate the missed goals with the finished goals
 				res.tasks.forEach(element => {
 					if(element.missed == false){
 						if(element.finished_date != null){
 							finishedGoals.push(element);
+						} else{ 
+							activeGoals.push(element);
 						}
 					} else if (element.missed == true) {
 						missedGoals.push(element);
 					}
 				});
 				
+
 				this.setState({
-					tasksCount:Object.keys(res.tasks).length, 
+					tasksCount:Object.keys(activeGoals).length, 
 					missed:Object.keys(missedGoals).length, 
 					finished:Object.keys(finishedGoals).length
 				})
@@ -93,6 +101,15 @@ export default class Profile extends React.Component {
 				console.log('NO TASKS ASSIGNED');
 			}
 
+		}))
+		.then((() => {
+			if(this.state.missed != 'no'){
+				this.setState({missedMessage:'\nTime to work harder!'})
+			}
+
+			if(this.state.finished != 'no'){
+				this.setState({finishedMessage:'\nKeep up the good \nwork!'})
+			}
 		}))
 		.done();
 	}
@@ -108,21 +125,25 @@ export default class Profile extends React.Component {
 				/>
 				<ScrollView>
 				<Card>
-				<Text style={{fontSize:20, fontFamily:'Montserrat-Regular'}}>Welcome,</Text>
-					<View style={{flexDirection:'row', marginVertical:10}}>
-					<Avatar
-						medium
-						rounded
-						source={{uri: "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-512.png"}}
-						activeOpacity={0.7}
-					/>
-					<Text style={{fontSize:35, fontFamily:'Montserrat-SemiBold', marginHorizontal:10}}>{this.state.firstName + ' ' + this.state.lastName}</Text>
-					</View>
+				<View style={{flexDirection:'row'}}>
+				<FontAwesome
+					name='user'
+					color='black'
+					size={SCREEN_WIDTH/7}
+					style={{marginHorizontal:10}}
+				/>
+				<View>
+				<Text style={{fontSize:SCREEN_WIDTH/15, fontFamily:'Montserrat-SemiBold', marginHorizontal:10}}>{this.state.firstName + ' ' + this.state.lastName}</Text>
+				<Text style={{fontSize:SCREEN_WIDTH/25, fontFamily:'Montserrat-Regular',marginHorizontal:10}}>{this.state.email}</Text>
+				</View>
+				</View>
 				</Card>
 
 				<Card
-				image={require('../../assets/images/getstarted.jpg')}>
-					<Text style={{fontSize:20, fontFamily:'Montserrat-Regular', marginHorizontal:10}}>{'You currently have '+ this.state.tasksCount + ' pending tasks'}</Text>
+				image={require('../../assets/images/getstarted.jpg')}
+				featuredTitle={'You currently have '+ this.state.tasksCount + ' pending tasks'}
+				featuredTitleStyle={{fontSize:20, fontFamily:'Montserrat-Regular', color:'#fff'}}
+				>
 					<Button
 					title ='Get Started'
 					buttonStyle={styles.getStarted}
@@ -145,7 +166,7 @@ export default class Profile extends React.Component {
 					size={100}
                 />
 				<Text style= {{fontFamily:'Montserrat-Regular', fontSize:SCREEN_WIDTH/20, marginHorizontal:20}}>
-					{'You have ' + this.state.finished+'\ngoals finished. \nKeep up the good \nwork!'}
+					{'You have ' + this.state.finished+'\ngoals finished.'+ this.state.finishedMessage}
 				</Text>
 				</View>
 
@@ -162,7 +183,7 @@ export default class Profile extends React.Component {
 					size={100}
                 />
 				<Text style= {{fontFamily:'Montserrat-Regular', fontSize:SCREEN_WIDTH/20, marginHorizontal:20}}>
-					{'You have ' + this.state.missed+'\ngoals missed. \nTime to work \nharder!'}
+					{'You have ' + this.state.missed+'\ngoals missed.' + this.state.missedMessage}
 				</Text>
 				</View>
 

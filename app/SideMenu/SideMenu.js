@@ -2,13 +2,16 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import styles from './SideMenu.style';
 import {NavigationActions} from 'react-navigation';
-import {ScrollView, Text, View, Icon, Image, ImageBackground, AsyncStorage, TouchableHighlight, TouchableOpacity} from 'react-native';
-import { Avatar, Divider } from 'react-native-elements';
+import {ScrollView, Text, View, Icon, Image, ImageBackground, AsyncStorage, TouchableHighlight, TouchableOpacity, Dimensions} from 'react-native';
+import { Avatar, Divider, Button } from 'react-native-elements';
 import { Font } from 'expo';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Modal from 'react-native-modal';
+
+const SCREEN_WIDTH = Dimensions.get('window').width
+const SCREEN_HEIGHT = Dimensions.get('window').height
 
 class SideMenu extends Component {
   navigateToScreen = (route) => () => {
@@ -33,18 +36,21 @@ class SideMenu extends Component {
   };
 	
 	_renderButton = (text, onPress) => (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.button}>
-        <Text>{text}</Text>
-      </View>
-    </TouchableOpacity>
+    <Button
+    title ={text}
+    buttonStyle={styles.modalButton}
+    textStyle={{fontFamily:'Montserrat-SemiBold'}}
+    onPress={onPress}
+    />
   );
 
   _renderModalContent = (text) => (
     <View style={styles.modalContent}>
-      <Text>{text}</Text>
+      <Text style={{fontFamily:'Montserrat-SemiBold', marginVertical: 10, fontSize:SCREEN_WIDTH/25}}>{text}</Text>
+      <View style={{flexDirection:'row'}}>
 	  {this._renderButton('Yes', () => {this.logout()})}
       {this._renderButton('No', () => this.setState({ visibleModal: null }))}
+      </View>
     </View>
   );
   
@@ -135,7 +141,7 @@ class SideMenu extends Component {
           animationIn={'slideInLeft'}
           animationOut={'slideOutRight'}
         >
-          {this._renderModalContent('log Out?')}
+          {this._renderModalContent('Are you sure you want to log out?')}
         </Modal>
           </View>
         </ScrollView>
