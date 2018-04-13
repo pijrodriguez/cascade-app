@@ -87,8 +87,8 @@ class SideMenu extends Component {
               name='home'
               color='#00c6ff'
               size={40}
-              style={{}}/>
-              <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold'}]} onPress={this.navigateToScreen('Home')}>
+              style={{marginTop:10}}/>
+              <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-Regular', fontSize:18}]} onPress={this.navigateToScreen('Home')}>
               HOME
               </Text>
             </View>
@@ -98,8 +98,8 @@ class SideMenu extends Component {
               name='tasks'
               color='#00c6ff'
               size={40}
-              style={{}}/>
-              <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold'}]} onPress={this.navigateToScreen('Tasks')}>
+              style={{marginTop:10}}/>
+              <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-Regular', fontSize:18}]} onPress={this.navigateToScreen('Tasks')}>
               TASKS
               </Text>
             </View>
@@ -109,8 +109,8 @@ class SideMenu extends Component {
               name='settings'
               color='#00c6ff'
               size={40}
-              style={{}}/>
-            <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold'}]} onPress={this.navigateToScreen('Settings')}>
+              style={{marginTop:10}}/>
+            <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-Regular', fontSize:18}]} onPress={this.navigateToScreen('Settings')}>
                SETTINGS
             </Text>
             </View>
@@ -122,8 +122,8 @@ class SideMenu extends Component {
               name='exit-to-app'
               color='#00c6ff'
               size={40}
-              style={{}}/>
-            <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-SemiBold'}]} onPress={this.popalert}>
+              style={{marginTop:10}}/>
+            <Text style={[styles.navItemStyle,{fontFamily:'Montserrat-Regular', fontSize:18}]} onPress={this.popalert}>
             LOG OUT
             </Text>
             </View>
@@ -145,7 +145,7 @@ class SideMenu extends Component {
   }
 
   logout = () => {
-    AsyncStorage.multiRemove(['user','user_id','first_name','last_name', 'password', 'user_rating']);
+    AsyncStorage.multiRemove(['user','user_id','first_name','last_name', 'password']);
     this.setState({user:'Name'})
 	this.setState({ visibleModal: null })
     this._reloadState().done();

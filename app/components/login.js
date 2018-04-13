@@ -128,7 +128,7 @@ export default class Login extends React.Component {
                 />
 
 				<FormInput 
-				inputStyle={styles.inputStyle}
+				inputStyle={[styles.inputStyle,{fontFamily:'Montserrat-Regular'}]}
 				placeholder='E-mail'
 				onChangeText={ (email) => this.setState({email}) }
 				keyboardType="email-address"
@@ -152,7 +152,7 @@ export default class Login extends React.Component {
 					style={{marginLeft:15}}
                 />
 				<FormInput 
-				inputStyle={styles.inputStyle}
+				inputStyle={[styles.inputStyle,{fontFamily:'Montserrat-Regular'}]}
 				placeholder='Password'
 				ref={ input => this.passwordInput = input}
 				onChangeText={ (password) => this.setState({password}) }
@@ -167,7 +167,7 @@ export default class Login extends React.Component {
 				<Button
 				title ='LOG IN'
 				buttonStyle={styles.loginButton}
-				textStyle={{fontWeight: 'bold'}}
+				textStyle={{fontFamily:'Montserrat-Bold'}}
 				onPress={this.login}
 				rounded={true}
 				/>
@@ -203,7 +203,6 @@ export default class Login extends React.Component {
 					['first_name', res.first_name],
 					['last_name', res.last_name],
 					['password', res.password],
-					['user_rating', JSON.stringify(res.user_rating)]
 					]);
 					this.props.navigation.navigate('Home');
 				}
